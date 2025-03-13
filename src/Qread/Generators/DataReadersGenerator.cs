@@ -92,6 +92,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                     nameof(DateTimeOffset) => $"{orNull}(DateTimeOffset)reader.GetValue({index})",
                     nameof(Decimal) => $"{orNull}reader.GetDecimal({index})",
                     nameof(Double) => $"{orNull}reader.GetDouble({index})",
+                    nameof(Single) => $"{orNull}reader.GetFloat({index})",
                     nameof(Guid) => $"{orNull}reader.GetGuid({index})",
                     nameof(Int16) => $"{orNull}reader.GetInt16({index})",
                     nameof(Int32) => $"{orNull}reader.GetInt32({index})",

@@ -297,6 +297,48 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task FloatReader_ShouldBeGenerated_WhenPropertyIsFloat()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required float Value { get; init; }
+                public required Single Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task FloatReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableFloat()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required float? Value { get; init; }
+                public required Single? Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task GetValue_ShouldBeCalled_WhenPropertyIsDateTimeOffset()
     {
         // Arrange.
