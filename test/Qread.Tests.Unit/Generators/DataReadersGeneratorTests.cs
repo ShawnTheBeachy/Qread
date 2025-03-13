@@ -49,6 +49,48 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task CharReader_ShouldBeGenerated_WhenPropertyIsBoolean()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required char Value { get; init; }
+                public required Char Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task CharReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableBoolean()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required char? Value { get; init; }
+                public required Char? Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task DateTimeReader_ShouldBeGenerated_WhenPropertyIsDateOnly()
     {
         // Arrange.

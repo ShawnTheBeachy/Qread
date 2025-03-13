@@ -85,6 +85,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 : prop.TypeName switch
                 {
                     nameof(Boolean) => $"{orNull}reader.GetBoolean({index})",
+                    nameof(Char) => $"{orNull}reader.GetChar({index})",
                     "DateOnly" => $"{orNull}DateOnly.FromDateTime(reader.GetDateTime({index}))",
                     nameof(DateTime) => $"{orNull}reader.GetDateTime({index})",
                     nameof(DateTimeOffset) => $"{orNull}(DateTimeOffset)reader.GetValue({index})",
