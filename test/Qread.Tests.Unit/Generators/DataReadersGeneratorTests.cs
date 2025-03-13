@@ -49,7 +49,49 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
-    public Task CharReader_ShouldBeGenerated_WhenPropertyIsBoolean()
+    public Task ByteReader_ShouldBeGenerated_WhenPropertyIsByte()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required byte Value { get; init; }
+                public required Byte Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task ByteReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableByte()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required byte? Value { get; init; }
+                public required Byte? Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task CharReader_ShouldBeGenerated_WhenPropertyIsChar()
     {
         // Arrange.
         const string dtoSourceText = """
@@ -70,7 +112,7 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
-    public Task CharReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableBoolean()
+    public Task CharReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableChar()
     {
         // Arrange.
         const string dtoSourceText = """
