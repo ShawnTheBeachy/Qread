@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Qread.Internals;
-using Qread.Sources;
 
 namespace Qread.Models;
 
@@ -42,7 +41,10 @@ internal sealed record DataReaderGenerationTarget
                     : parent.IsRecord
                         ? "record"
                         : "class";
-            parents.Insert(0, $"partial {typeText} {parent.Name}");
+            parents.Insert(
+                0,
+                $"{(parent.IsStatic ? "static " : "")}partial {typeText} {parent.Name}"
+            );
             parent = parent.ContainingType;
         } while (parent is not null);
 

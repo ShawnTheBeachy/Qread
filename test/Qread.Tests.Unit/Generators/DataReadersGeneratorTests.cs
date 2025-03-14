@@ -133,6 +133,30 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task Class_ShouldBeMarkedStatic_WhenTargetIsWrappedInStaticClass()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            public static partial class Dtos
+            {
+                [GenerateDataReader(IsExact = true)]
+                public sealed partial record TestDto
+                {
+                    public required char? Value { get; init; }
+                    public required Char? Value2 { get; init; }
+                }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task DateTimeReader_ShouldBeGenerated_WhenPropertyIsDateOnly()
     {
         // Arrange.
