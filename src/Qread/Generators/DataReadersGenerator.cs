@@ -171,7 +171,10 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(
             context.CompilationProvider.Combine(provider.Collect()),
             (ctx, targets) =>
-                GenerateCode(ctx, [.. targets.Right.OfType<DataReaderGenerationTarget>()])
+                GenerateCode(
+                    ctx,
+                    targets.Right.OfType<DataReaderGenerationTarget>().ToImmutableArray()
+                )
         );
     }
 
