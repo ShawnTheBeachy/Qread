@@ -50,4 +50,8 @@ jobs:
           retention-days: 1
     env:
       DescribeTests: false
-      TESTINGPLATFORM_TELEMETRY_OPTOUT: 1
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER: true
