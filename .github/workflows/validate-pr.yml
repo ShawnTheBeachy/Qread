@@ -51,3 +51,4 @@ jobs:
     env:
       DescribeTests: false
       TESTINGPLATFORM_TELEMETRY_OPTOUT: 1
+      DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER: 1
