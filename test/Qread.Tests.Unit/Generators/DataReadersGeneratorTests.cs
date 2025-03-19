@@ -255,7 +255,7 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
-    public Task DoubleReader_ShouldBeGenerated_WhenPropertyIsDecimal()
+    public Task DoubleReader_ShouldBeGenerated_WhenPropertyIsDouble()
     {
         // Arrange.
         const string dtoSourceText = """
@@ -276,7 +276,7 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
-    public Task DoubleReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableDecimal()
+    public Task DoubleReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableDouble()
     {
         // Arrange.
         const string dtoSourceText = """
@@ -764,10 +764,69 @@ public sealed class DataReadersGeneratorTests
         await Assert
             .That(
                 runResult.GeneratedTrees.Where(x =>
-                    x.FilePath.EndsWith("TestNamespace_TestDto.g.cs")
+                    x.FilePath.EndsWith("TestNamespace.TestDto.g.cs")
                 )
             )
             .IsEmpty();
+    }
+
+    [Test]
+    public async Task TwoReaders_ShouldBeGenerated_WhenTwoTargetsWithSameNameExistInDifferentNamespaces()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            public sealed partial class ParentA
+            {
+                [GenerateDataReader(IsExact = true)]
+                public sealed partial record TestDto
+                {
+                    public required string Value { get; init; }
+                }
+            }
+
+            public sealed partial class ParentB
+            {
+                [GenerateDataReader(IsExact = true)]
+                public sealed partial record TestDto
+                {
+                    public required string Value { get; init; }
+                }
+            }
+
+            """;
+        var generator = new DataReadersGenerator();
+        var driver = CSharpGeneratorDriver.Create(generator);
+        var compilation = CSharpCompilation.Create(
+            typeof(DataReadersGeneratorTests).Assembly.FullName,
+            [CSharpSyntaxTree.ParseText(dtoSourceText)],
+            [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)]
+        );
+
+        // Act.
+        var runResult = driver.RunGenerators(compilation).GetRunResult();
+
+        // Assert.
+        using var asserts = Assert.Multiple();
+        await Assert
+            .That(
+                runResult.GeneratedTrees.Where(x =>
+                    x.FilePath.EndsWith("TestNamespace.ParentA.TestDto.g.cs")
+                )
+            )
+            .HasCount()
+            .EqualToOne();
+        await Assert
+            .That(
+                runResult.GeneratedTrees.Where(x =>
+                    x.FilePath.EndsWith("TestNamespace.ParentB.TestDto.g.cs")
+                )
+            )
+            .HasCount()
+            .EqualToOne();
     }
 
     [Test]

@@ -49,18 +49,20 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
             StartContainers(target, indentWriter);
 
             if (!target.IsExact)
+            {
                 indentWriter.WriteLine(
                     "private static FrozenDictionary<string, int>? _propIndices;"
                 );
+                indentWriter.WriteLineNoTabs("");
+            }
 
             GenerateFromDataReaderMethod(target, indentWriter);
             indentWriter.WriteLineNoTabs("");
             GenerateListFromDataReaderMethod(target, indentWriter);
             EndContainers(target, indentWriter);
-            context.AddSource(
-                $"{target.Namespace.Replace(".", "")}_{target.Name}.g.cs",
-                SourceText.From(baseWriter.ToString(), Encoding.UTF8)
-            );
+
+            var hintName = $"{target.FullName}.g.cs";
+            context.AddSource(hintName, SourceText.From(baseWriter.ToString(), Encoding.UTF8));
         }
     }
 
@@ -122,7 +124,6 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.StartBlock();
         writer.WriteLine($"var results = new List<{target.Name}>();");
         writer.WriteLineNoTabs("");
-        GeneratePropertyIndices(target, writer);
         writer.WriteLine("while (reader.Read())");
         writer.StartBlock();
         writer.WriteLine("var instance = FromDataReader(reader);");

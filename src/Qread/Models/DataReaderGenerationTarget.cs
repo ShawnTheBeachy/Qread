@@ -4,12 +4,12 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Qread.Internals;
-using Qread.Sources;
 
 namespace Qread.Models;
 
 internal sealed record DataReaderGenerationTarget
 {
+    public string FullName { get; set; }
     public bool IsExact { get; set; }
     public string Name { get; set; } = "";
     public string Namespace { get; set; } = "";
@@ -50,9 +50,10 @@ internal sealed record DataReaderGenerationTarget
             context.GetGenerateDataReaderAttribute()?.GetNamedArg("IsExact")?.Value is true;
         return new DataReaderGenerationTarget
         {
+            FullName = namedTypeSymbol!.ToDisplayString(),
             IsExact = isExact,
             Name = typeDeclarationSyntax.Identifier.Text,
-            Namespace = namedTypeSymbol!.ContainingNamespace.ToDisplayString(),
+            Namespace = namedTypeSymbol.ContainingNamespace.ToDisplayString(),
             Parents = parents.ToImmutableArray(),
             Properties = properties,
             Type =
