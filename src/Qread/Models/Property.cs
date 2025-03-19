@@ -12,10 +12,11 @@ internal readonly record struct Property
 
     public Property(IPropertySymbol symbol)
     {
-        TypeName = TryGetNullableValueUnderlyingType(symbol, out var underlying)
-            ? underlying!.Name
-            : symbol.Type.Name;
-        IsEnum = symbol.Type is INamedTypeSymbol { EnumUnderlyingType: not null };
+        var type = TryGetNullableValueUnderlyingType(symbol, out var underlying)
+            ? underlying
+            : symbol.Type;
+        TypeName = type!.Name;
+        IsEnum = type is INamedTypeSymbol { EnumUnderlyingType: not null };
         IsNullable = IsPropNullable(symbol);
         Name = symbol.Name;
         FullyQualifiedTypeName = symbol.Type.ToDisplayString();

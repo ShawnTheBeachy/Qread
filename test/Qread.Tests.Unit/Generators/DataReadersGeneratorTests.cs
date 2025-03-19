@@ -791,4 +791,26 @@ public sealed class DataReadersGeneratorTests
         // Assert.
         return DataReadersGeneratorHelper.Verify(dtoSourceText);
     }
+
+    [Test]
+    public Task Value_ShouldBeCast_WhenPropertyIsNullableEnum()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required Color? Color { get; init; }
+            }
+
+            public enum Color;
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
 }
