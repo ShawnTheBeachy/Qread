@@ -585,6 +585,26 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task Property_ShouldBeSkipped_WhenItIsReadOnly()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public int Value => 1;
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task PropertyIndices_ShouldBeGenerated_WhenIsNotExact()
     {
         // Arrange.
