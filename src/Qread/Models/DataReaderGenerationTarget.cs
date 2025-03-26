@@ -75,6 +75,7 @@ internal sealed record DataReaderGenerationTarget
                     .GetMembers()
                     .OfType<IPropertySymbol>()
                     .Where(x => x.DeclaredAccessibility == Accessibility.Public)
+                    .Where(x => !x.IsReadOnly)
                     .Where(x =>
                         typeSyntax is not RecordDeclarationSyntax || x.Name != "EqualityContract"
                     )
