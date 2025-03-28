@@ -61,7 +61,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
             GenerateListFromDataReaderMethod(target, indentWriter);
             EndContainers(target, indentWriter);
 
-            var hintName = $"{target.FullName}.g.cs";
+            var hintName = $"{target.Type.FullName}.g.cs";
             context.AddSource(hintName, SourceText.From(baseWriter.ToString(), Encoding.UTF8));
         }
     }
@@ -71,20 +71,20 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         IndentedTextWriter writer
     )
     {
-        writer.WriteLine($"public static {target.Name} FromDataReader(IDataReader reader)");
+        writer.WriteLine($"public static {target.Type.Name} FromDataReader(IDataReader reader)");
         writer.StartBlock();
         GeneratePropertyIndices(target, writer);
-        writer.WriteLine($"var instance = new {target.Name}");
+        writer.WriteLine($"var instance = new {target.Type.Name}");
         writer.StartBlock();
 
-        for (var i = 0; i < target.Properties.Length; i++)
+        for (var i = 0; i < target.Type.Properties.Length; i++)
         {
-            var prop = target.Properties[i];
+            var prop = target.Type.Properties[i];
             var index = target.IsExact ? i.ToString() : $"_propIndices[\"{prop.Name}\"]";
             var orNull = prop.IsNullable ? $"reader.IsDBNull({index}) ? null : " : "";
-            var setter = prop.IsEnum
-                ? $"{orNull}(global::{prop.FullyQualifiedTypeName})reader.GetInt32({index})"
-                : prop.TypeName switch
+            var setter = prop.Type.IsEnum
+                ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"
+                : prop.Type.Name switch
                 {
                     nameof(Boolean) => $"{orNull}reader.GetBoolean({index})",
                     nameof(Byte) => $"{orNull}reader.GetByte({index})",
@@ -100,10 +100,10 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                     nameof(Int32) => $"{orNull}reader.GetInt32({index})",
                     nameof(Int64) => $"{orNull}reader.GetInt64({index})",
                     nameof(String) => $"{orNull}reader.GetString({index})",
-                    _ => $"throw new Exception(\"Unknown type {prop.FullyQualifiedTypeName}.\")",
+                    _ => $"throw new Exception(\"Unknown type {prop.Type.FullName}.\")",
                 };
             writer.WriteLine(
-                $"{prop.Name} = {setter}{(i < target.Properties.Length - 1 ? "," : "")}"
+                $"{prop.Name} = {setter}{(i < target.Type.Properties.Length - 1 ? "," : "")}"
             );
         }
 
@@ -119,10 +119,10 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     )
     {
         writer.WriteLine(
-            $"public static IReadOnlyList<{target.Name}> ListFromDataReader(IDataReader reader)"
+            $"public static IReadOnlyList<{target.Type.Name}> ListFromDataReader(IDataReader reader)"
         );
         writer.StartBlock();
-        writer.WriteLine($"var results = new List<{target.Name}>();");
+        writer.WriteLine($"var results = new List<{target.Type.Name}>();");
         writer.WriteLineNoTabs("");
         writer.WriteLine("while (reader.Read())");
         writer.StartBlock();
@@ -132,6 +132,11 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.WriteLineNoTabs("");
         writer.WriteLine("return results;");
         writer.EndBlock();
+    }
+
+    private static void GenerateNestedObjectReader(Property property, IndentedTextWriter writer)
+    {
+        writer.WriteLine($"partial ");
     }
 
     private static void GeneratePropertyIndices(
@@ -167,7 +172,8 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                     is ClassDeclarationSyntax
                         or RecordDeclarationSyntax
                         or StructDeclarationSyntax,
-            static (ctx, _) => DataReaderGenerationTarget.FromContext(ctx)
+            static (ctx, _) =>
+                DataReaderGenerationTarget.TryCreate(ctx, out var target) ? target : null
         );
         context.RegisterSourceOutput(
             context.CompilationProvider.Combine(provider.Collect()),

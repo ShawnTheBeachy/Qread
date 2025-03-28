@@ -1,6 +1,6 @@
 ﻿namespace Qread.Internals;
 
-internal enum GenerationTargetType
+internal enum TypeKindInternal
 {
     Class,
     Record,

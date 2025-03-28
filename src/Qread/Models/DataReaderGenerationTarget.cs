@@ -1,35 +1,25 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Qread.Internals;
 
 namespace Qread.Models;
 
-internal sealed record DataReaderGenerationTarget
+internal readonly record struct DataReaderGenerationTarget
 {
-    public string FullName { get; set; } = "";
-    public bool IsExact { get; set; }
-    public string Name { get; set; } = "";
-    public string Namespace { get; set; } = "";
-    public EquatableArray<string> Parents { get; set; } = [];
-    public EquatableArray<Property> Properties { get; set; } = [];
-    public GenerationTargetType Type { get; set; }
+    public bool IsExact { get; }
+    public string Namespace { get; } = "";
+    public EquatableArray<string> Parents { get; } = [];
+    public TypeInternal Type { get; }
 
-    public static DataReaderGenerationTarget? FromContext(GeneratorAttributeSyntaxContext context)
+    private DataReaderGenerationTarget(
+        GeneratorAttributeSyntaxContext context,
+        INamedTypeSymbol symbol
+    )
     {
-        var typeDeclarationSyntax = (TypeDeclarationSyntax)context.TargetNode;
-
-        if (!IsNamedTypeSymbol(context, typeDeclarationSyntax, out var namedTypeSymbol))
-            return null;
-
-        if (!HasParameterlessConstructor(namedTypeSymbol!))
-            return null;
-
-        var properties = namedTypeSymbol!.GetProperties().ToImmutableArray();
         var parents = new List<string>();
-        var parent = namedTypeSymbol!;
+        var parent = symbol;
 
         do
         {
@@ -47,31 +37,46 @@ internal sealed record DataReaderGenerationTarget
 
         var isExact =
             context.GetGenerateDataReaderAttribute()?.GetNamedArg("IsExact")?.Value is true;
-        return new DataReaderGenerationTarget
-        {
-            FullName = namedTypeSymbol!.ToDisplayString(),
-            IsExact = isExact,
-            Name = typeDeclarationSyntax.Identifier.Text,
-            Namespace = namedTypeSymbol.ContainingNamespace.ToDisplayString(),
-            Parents = parents.ToImmutableArray(),
-            Properties = properties,
-            Type =
-                typeDeclarationSyntax is StructDeclarationSyntax ? GenerationTargetType.Struct
-                : namedTypeSymbol.IsRecord ? GenerationTargetType.Record
-                : GenerationTargetType.Class,
-        };
+        Type = new TypeInternal(symbol);
+        IsExact = isExact;
+        Namespace = symbol.ContainingNamespace.ToDisplayString();
+        Parents = parents.ToImmutableArray();
     }
 
-    private static bool HasParameterlessConstructor(INamedTypeSymbol typeSymbol) =>
-        typeSymbol.Constructors.Any(x => x.Parameters.Length == 0);
+    public static bool TryCreate(
+        GeneratorAttributeSyntaxContext context,
+        out DataReaderGenerationTarget? target
+    )
+    {
+        target = null;
+        var typeDeclarationSyntax = (TypeDeclarationSyntax)context.TargetNode;
+
+        if (!IsNamedTypeSymbol(context, typeDeclarationSyntax, out var namedTypeSymbol))
+            return false;
+
+        if (!HasParameterlessConstructor(namedTypeSymbol))
+            return false;
+
+        target = new DataReaderGenerationTarget(context, namedTypeSymbol);
+        return true;
+    }
+
+    private static bool HasParameterlessConstructor(INamedTypeSymbol symbol)
+    {
+        foreach (var constructor in symbol.Constructors)
+            if (constructor.Parameters.Length == 0)
+                return true;
+
+        return false;
+    }
 
     private static bool IsNamedTypeSymbol(
         GeneratorAttributeSyntaxContext context,
         TypeDeclarationSyntax typeDeclarationSyntax,
-        out INamedTypeSymbol? symbol
+        out INamedTypeSymbol symbol
     )
     {
-        symbol = null;
+        symbol = null!;
 
         if (
             context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax)

@@ -42,7 +42,7 @@ internal static class Extensions
         return null;
     }
 
-    public static IEnumerable<Property> GetProperties(this INamedTypeSymbol typeSymbol)
+    public static IEnumerable<Property> GetProperties(this ITypeSymbol typeSymbol)
     {
         if (typeSymbol.IsAbstract)
             yield break;
