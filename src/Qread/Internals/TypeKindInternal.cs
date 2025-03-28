@@ -4,5 +4,6 @@ internal enum TypeKindInternal
 {
     Class,
     Record,
+    RecordStruct,
     Struct,
 }

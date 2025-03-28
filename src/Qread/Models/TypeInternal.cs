@@ -18,9 +18,6 @@ internal sealed record TypeInternal
         IsEnum = symbol is INamedTypeSymbol { EnumUnderlyingType: not null };
         Name = symbol.Name;
         Properties = symbol.GetProperties().ToImmutableArray();
-        TypeKind =
-            symbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Struct ? TypeKindInternal.Struct
-            : symbol.IsRecord ? TypeKindInternal.Record
-            : TypeKindInternal.Class;
+        TypeKind = symbol.TypeKind();
     }
 }

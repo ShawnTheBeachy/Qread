@@ -12,7 +12,7 @@ partial record TestDto
     {
         var instance = new TestDto
         {
-            Color = reader.IsDBNull(0) ? null : (global::TestNamespace.Color?)reader.GetInt32(0)
+            Color = reader.IsDBNull(0) ? null : (global::TestNamespace.Color)reader.GetInt32(0)
         };
         return instance;
     }

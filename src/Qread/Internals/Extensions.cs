@@ -84,4 +84,23 @@ internal static class Extensions
         writer.WriteLine("{");
         writer.Indent++;
     }
+
+    public static string ToDeclaration(this TypeKindInternal typeKind) =>
+        typeKind switch
+        {
+            TypeKindInternal.Class => "class",
+            TypeKindInternal.Record => "record",
+            TypeKindInternal.RecordStruct => "record struct",
+            TypeKindInternal.Struct => "struct",
+            _ => "",
+        };
+
+    public static TypeKindInternal TypeKind(this ITypeSymbol symbol) =>
+        symbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Struct
+            ? symbol.IsRecord
+                ? TypeKindInternal.RecordStruct
+                : TypeKindInternal.Struct
+            : symbol.IsRecord
+                ? TypeKindInternal.Record
+                : TypeKindInternal.Class;
 }

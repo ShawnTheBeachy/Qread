@@ -23,15 +23,7 @@ internal readonly record struct DataReaderGenerationTarget
 
         do
         {
-            var typeText =
-                parent.TypeKind == TypeKind.Struct
-                    ? parent.IsRecord
-                        ? "record struct"
-                        : "struct"
-                    : parent.IsRecord
-                        ? "record"
-                        : "class";
-            parents.Insert(0, $"partial {typeText} {parent.Name}");
+            parents.Insert(0, $"partial {parent.TypeKind().ToDeclaration()} {parent.Name}");
             parent = parent.ContainingType;
         } while (parent is not null);
 
