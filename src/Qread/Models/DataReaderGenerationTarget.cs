@@ -27,8 +27,7 @@ internal sealed record DataReaderGenerationTarget
         if (!HasParameterlessConstructor(namedTypeSymbol!))
             return null;
 
-        var properties = GetProperties(namedTypeSymbol!, typeDeclarationSyntax).ToImmutableArray();
-
+        var properties = namedTypeSymbol!.GetProperties().ToImmutableArray();
         var parents = new List<string>();
         var parent = namedTypeSymbol!;
 
@@ -61,33 +60,6 @@ internal sealed record DataReaderGenerationTarget
                 : namedTypeSymbol.IsRecord ? GenerationTargetType.Record
                 : GenerationTargetType.Class,
         };
-    }
-
-    private static IEnumerable<Property> GetProperties(
-        INamedTypeSymbol classSymbol,
-        TypeDeclarationSyntax typeSyntax
-    )
-    {
-        while (true)
-        {
-            foreach (
-                var prop in classSymbol
-                    .GetMembers()
-                    .OfType<IPropertySymbol>()
-                    .Where(x => x.DeclaredAccessibility == Accessibility.Public)
-                    .Where(x => !x.IsReadOnly)
-                    .Where(x =>
-                        typeSyntax is not RecordDeclarationSyntax || x.Name != "EqualityContract"
-                    )
-                    .Select(x => new Property(x))
-            )
-                yield return prop;
-
-            if (classSymbol.BaseType is null)
-                yield break;
-
-            classSymbol = classSymbol.BaseType;
-        }
     }
 
     private static bool HasParameterlessConstructor(INamedTypeSymbol typeSymbol) =>
