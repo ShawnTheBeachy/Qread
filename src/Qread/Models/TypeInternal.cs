@@ -9,6 +9,10 @@ internal sealed record TypeInternal
 {
     public EquatableArray<TypeContainer> Containers { get; } = [];
     public string FullName { get; }
+    public string FullNameIgnoreNullable =>
+        FullName[FullName.Length - 1] == '?'
+            ? FullName.Substring(0, FullName.Length - 1)
+            : FullName;
     public bool IsEnum { get; }
     public string Name { get; }
     public EquatableArray<Property> Properties { get; }
@@ -30,5 +34,21 @@ internal sealed record TypeInternal
         } while (parent is not null);
 
         Containers = parents.ToImmutableArray();
+    }
+
+    public IEnumerable<Property> DeepProperties()
+    {
+        return GetProps(this);
+
+        IEnumerable<Property> GetProps(TypeInternal type)
+        {
+            foreach (var prop in type.Properties)
+            {
+                yield return prop;
+
+                foreach (var child in GetProps(prop.Type))
+                    yield return child;
+            }
+        }
     }
 }

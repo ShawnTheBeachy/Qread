@@ -10,7 +10,7 @@ partial record TestDto
 {
     private static FrozenDictionary<string, int>? _propIndices;
 
-    public static TestDto FromDataReader(IDataReader reader)
+    public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
         if (_propIndices is null)
         {
@@ -25,16 +25,16 @@ partial record TestDto
             _propIndices = unfrozenPropIndices.ToFrozenDictionary();
         }
 
-        var instance = new TestDto
+        var instance = new global::TestNamespace.TestDto
         {
             Name = reader.GetString(_propIndices["Name"])
         };
         return instance;
     }
 
-    public static IReadOnlyList<TestDto> ListFromDataReader(IDataReader reader)
+    public static IReadOnlyList<global::TestNamespace.TestDto> ListFromDataReader(IDataReader reader)
     {
-        var results = new List<TestDto>();
+        var results = new List<global::TestNamespace.TestDto>();
 
         while (reader.Read())
         {

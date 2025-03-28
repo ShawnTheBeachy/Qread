@@ -103,4 +103,11 @@ internal static class Extensions
             : symbol.IsRecord
                 ? TypeKindInternal.Record
                 : TypeKindInternal.Class;
+
+    public static void WriteLineIndented(this IndentedTextWriter writer, string value)
+    {
+        writer.Indent++;
+        writer.WriteLine(value);
+        writer.Indent--;
+    }
 }

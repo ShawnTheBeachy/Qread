@@ -8,10 +8,10 @@ namespace TestNamespace;
 
 partial record TestDto
 {
-    public static TestDto FromDataReader(IDataReader reader)
+    public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
         var i = -1;
-        var instance = new TestDto
+        var instance = new global::TestNamespace.TestDto
         {
             IsDisabled = reader.IsDBNull(++i) ? null : reader.GetBoolean(i),
             IsDisabled2 = reader.IsDBNull(++i) ? null : reader.GetBoolean(i)
@@ -19,9 +19,9 @@ partial record TestDto
         return instance;
     }
 
-    public static IReadOnlyList<TestDto> ListFromDataReader(IDataReader reader)
+    public static IReadOnlyList<global::TestNamespace.TestDto> ListFromDataReader(IDataReader reader)
     {
-        var results = new List<TestDto>();
+        var results = new List<global::TestNamespace.TestDto>();
 
         while (reader.Read())
         {
