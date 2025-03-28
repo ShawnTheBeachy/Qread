@@ -10,7 +10,6 @@ internal readonly record struct DataReaderGenerationTarget
 {
     public bool IsExact { get; }
     public string Namespace { get; } = "";
-    public EquatableArray<string> Parents { get; } = [];
     public TypeInternal Type { get; }
 
     private DataReaderGenerationTarget(
@@ -18,21 +17,11 @@ internal readonly record struct DataReaderGenerationTarget
         INamedTypeSymbol symbol
     )
     {
-        var parents = new List<string>();
-        var parent = symbol;
-
-        do
-        {
-            parents.Insert(0, $"partial {parent.TypeKind().ToDeclaration()} {parent.Name}");
-            parent = parent.ContainingType;
-        } while (parent is not null);
-
         var isExact =
             context.GetGenerateDataReaderAttribute()?.GetNamedArg("IsExact")?.Value is true;
         Type = new TypeInternal(symbol);
         IsExact = isExact;
         Namespace = symbol.ContainingNamespace.ToDisplayString();
-        Parents = parents.ToImmutableArray();
     }
 
     public static bool TryCreate(

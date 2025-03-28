@@ -15,9 +15,9 @@ namespace Qread.Generators;
 [Generator]
 public sealed class DataReadersGenerator : IIncrementalGenerator
 {
-    private static void EndContainers(DataReaderGenerationTarget target, IndentedTextWriter writer)
+    private static void EndContainers(TypeInternal type, IndentedTextWriter writer)
     {
-        foreach (var _ in target.Parents)
+        foreach (var _ in type.Containers)
             writer.EndBlock();
     }
 
@@ -46,7 +46,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 
                 """
             );
-            StartContainers(target, indentWriter);
+            StartContainers(target.Type, indentWriter);
 
             if (!target.IsExact)
             {
@@ -59,7 +59,10 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
             GenerateFromDataReaderMethod(target, indentWriter);
             indentWriter.WriteLineNoTabs("");
             GenerateListFromDataReaderMethod(target, indentWriter);
-            EndContainers(target, indentWriter);
+            EndContainers(target.Type, indentWriter);
+
+            foreach (var prop in target.Type.Properties)
+                GenerateNestedObject(prop, indentWriter);
 
             var hintName = $"{target.Type.FullName}.g.cs";
             context.AddSource(hintName, SourceText.From(baseWriter.ToString(), Encoding.UTF8));
@@ -134,9 +137,15 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.EndBlock();
     }
 
-    private static void GenerateNestedObjectReader(Property property, IndentedTextWriter writer)
+    private static void GenerateNestedObject(Property property, IndentedTextWriter writer)
     {
-        writer.WriteLine($"partial ");
+        if (property.Type.Properties.Length < 1)
+            return;
+
+        writer.WriteLineNoTabs("");
+        StartContainers(property.Type, writer);
+
+        EndContainers(property.Type, writer);
     }
 
     private static void GeneratePropertyIndices(
@@ -185,14 +194,11 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         );
     }
 
-    private static void StartContainers(
-        DataReaderGenerationTarget target,
-        IndentedTextWriter writer
-    )
+    private static void StartContainers(TypeInternal type, IndentedTextWriter writer)
     {
-        foreach (var parent in target.Parents)
+        foreach (var parent in type.Containers)
         {
-            writer.WriteLine(parent);
+            writer.WriteLine($"partial {parent.TypeKind.ToDeclaration()} {parent.Name}");
             writer.StartBlock();
         }
     }
