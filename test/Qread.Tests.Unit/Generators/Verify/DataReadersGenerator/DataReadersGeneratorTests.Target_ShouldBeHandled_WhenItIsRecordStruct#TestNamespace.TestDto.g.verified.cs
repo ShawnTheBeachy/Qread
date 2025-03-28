@@ -10,6 +10,7 @@ partial record struct TestDto
 {
     public static TestDto FromDataReader(IDataReader reader)
     {
+        var i = -1;
         var instance = new TestDto
         {
         };

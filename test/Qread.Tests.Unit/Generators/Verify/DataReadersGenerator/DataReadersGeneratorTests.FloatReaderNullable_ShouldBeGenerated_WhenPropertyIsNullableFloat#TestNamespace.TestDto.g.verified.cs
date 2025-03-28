@@ -10,10 +10,11 @@ partial record TestDto
 {
     public static TestDto FromDataReader(IDataReader reader)
     {
+        var i = -1;
         var instance = new TestDto
         {
-            Value = reader.IsDBNull(0) ? null : reader.GetFloat(0),
-            Value2 = reader.IsDBNull(1) ? null : reader.GetFloat(1)
+            Value = reader.IsDBNull(++i) ? null : reader.GetFloat(i),
+            Value2 = reader.IsDBNull(++i) ? null : reader.GetFloat(i)
         };
         return instance;
     }

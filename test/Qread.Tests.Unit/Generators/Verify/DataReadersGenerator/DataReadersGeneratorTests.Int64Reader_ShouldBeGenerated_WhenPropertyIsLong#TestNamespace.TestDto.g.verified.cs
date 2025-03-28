@@ -10,10 +10,11 @@ partial record TestDto
 {
     public static TestDto FromDataReader(IDataReader reader)
     {
+        var i = -1;
         var instance = new TestDto
         {
-            Count = reader.GetInt64(0),
-            Count2 = reader.GetInt64(1)
+            Count = reader.GetInt64(++i),
+            Count2 = reader.GetInt64(++i)
         };
         return instance;
     }

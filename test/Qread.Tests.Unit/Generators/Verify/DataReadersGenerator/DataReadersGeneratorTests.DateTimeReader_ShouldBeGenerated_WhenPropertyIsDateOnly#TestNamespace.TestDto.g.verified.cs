@@ -10,9 +10,10 @@ partial record TestDto
 {
     public static TestDto FromDataReader(IDataReader reader)
     {
+        var i = -1;
         var instance = new TestDto
         {
-            DateOfBirth = DateOnly.FromDateTime(reader.GetDateTime(0))
+            DateOfBirth = DateOnly.FromDateTime(reader.GetDateTime(++i))
         };
         return instance;
     }

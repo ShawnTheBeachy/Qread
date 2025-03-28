@@ -56,13 +56,13 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 indentWriter.WriteLineNoTabs("");
             }
 
-            GenerateFromDataReaderMethod(target, indentWriter);
+            GenerateFromDataReaderMethod(target.Type, target.IsExact, indentWriter, true);
             indentWriter.WriteLineNoTabs("");
             GenerateListFromDataReaderMethod(target, indentWriter);
             EndContainers(target.Type, indentWriter);
 
             foreach (var prop in target.Type.Properties)
-                GenerateNestedObject(prop, indentWriter);
+                GenerateNestedObject(target.IsExact, prop.Type, indentWriter);
 
             var hintName = $"{target.Type.FullName}.g.cs";
             context.AddSource(hintName, SourceText.From(baseWriter.ToString(), Encoding.UTF8));
@@ -70,21 +70,36 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     }
 
     private static void GenerateFromDataReaderMethod(
-        DataReaderGenerationTarget target,
-        IndentedTextWriter writer
+        TypeInternal type,
+        bool isExact,
+        IndentedTextWriter writer,
+        bool isRoot = false
     )
     {
-        writer.WriteLine($"public static {target.Type.Name} FromDataReader(IDataReader reader)");
-        writer.StartBlock();
-        GeneratePropertyIndices(target, writer);
-        writer.WriteLine($"var instance = new {target.Type.Name}");
+        writer.WriteLine(
+            $"public static {type.Name} FromDataReader(IDataReader reader{(!isExact && !isRoot ? ", FrozenDictionary<string, int> propIndices" : "")})"
+        );
         writer.StartBlock();
 
-        for (var i = 0; i < target.Type.Properties.Length; i++)
+        if (!isExact && isRoot)
+            GeneratePropertyIndices(writer);
+        else if (isExact && isRoot)
+            writer.WriteLine("var i = -1;");
+
+        writer.WriteLine($"var instance = new {type.Name}");
+        writer.StartBlock();
+
+        for (var i = 0; i < type.Properties.Length; i++)
         {
-            var prop = target.Type.Properties[i];
-            var index = target.IsExact ? i.ToString() : $"_propIndices[\"{prop.Name}\"]";
-            var orNull = prop.IsNullable ? $"reader.IsDBNull({index}) ? null : " : "";
+            var prop = type.Properties[i];
+            var index = isExact
+                ? prop.IsNullable
+                    ? "i"
+                    : "++i"
+                : $"{(isRoot ? "_" : "")}propIndices[\"{prop.Name}\"]";
+            var orNull = prop.IsNullable
+                ? $"reader.IsDBNull({(isExact ? "++i" : $"{(isRoot ? "_" : "")}propIndices[\"{prop.Name}\"]")}) ? null : "
+                : "";
             var setter = prop.Type.IsEnum
                 ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"
                 : prop.Type.Name switch
@@ -103,10 +118,19 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                     nameof(Int32) => $"{orNull}reader.GetInt32({index})",
                     nameof(Int64) => $"{orNull}reader.GetInt64({index})",
                     nameof(String) => $"{orNull}reader.GetString({index})",
-                    _ => $"throw new Exception(\"Unknown type {prop.Type.FullName}.\")",
+                    _ => null,
                 };
+
+            if (setter is null && prop.Type.Properties.Length > 0)
+                setter =
+                    $"global::{prop.Type.FullName}.FromDataReader(reader{(!isExact ? $", {(isRoot ? "_" : "")}propIndices" : "")})";
+            else
+            {
+                setter ??= $"throw new Exception(\"Unknown type {prop.Type.FullName}.\")";
+            }
+
             writer.WriteLine(
-                $"{prop.Name} = {setter}{(i < target.Type.Properties.Length - 1 ? "," : "")}"
+                $"{prop.Name} = {setter}{(i < type.Properties.Length - 1 ? "," : "")}"
             );
         }
 
@@ -137,25 +161,23 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.EndBlock();
     }
 
-    private static void GenerateNestedObject(Property property, IndentedTextWriter writer)
-    {
-        if (property.Type.Properties.Length < 1)
-            return;
-
-        writer.WriteLineNoTabs("");
-        StartContainers(property.Type, writer);
-
-        EndContainers(property.Type, writer);
-    }
-
-    private static void GeneratePropertyIndices(
-        DataReaderGenerationTarget target,
+    private static void GenerateNestedObject(
+        bool isExact,
+        TypeInternal type,
         IndentedTextWriter writer
     )
     {
-        if (target.IsExact)
+        if (type.Properties.Length < 1)
             return;
 
+        writer.WriteLineNoTabs("");
+        StartContainers(type, writer);
+        GenerateFromDataReaderMethod(type, isExact, writer);
+        EndContainers(type, writer);
+    }
+
+    private static void GeneratePropertyIndices(IndentedTextWriter writer)
+    {
         writer.WriteLine("if (_propIndices is null)");
         writer.StartBlock();
         writer.WriteLine("var unfrozenPropIndices = new Dictionary<string, int>();");
@@ -202,4 +224,20 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
             writer.StartBlock();
         }
     }
+
+    /*private sealed class NestedType
+    {
+        public string? Prefix { get;  }
+        public int? StartIndex { get;  }
+        public TypeInternal Type { get;  }
+
+        private NestedType(string? prefix, int? startIndex, TypeInternal type)
+        {
+            Prefix = prefix;
+            StartIndex = startIndex;
+            Type = type;
+        }
+
+        public static NestedType Create(TypeInternal type, ref int )
+    }*/
 }
