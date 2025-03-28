@@ -82,11 +82,4 @@ internal sealed record DataReaderGenerationTarget
         symbol = cs;
         return true;
     }
-
-    public enum GenerationTargetType
-    {
-        Class,
-        Record,
-        Struct,
-    }
 }
