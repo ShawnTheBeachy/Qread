@@ -1,4 +1,6 @@
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Qread.Internals;
 
 namespace Qread.Models;
 
@@ -8,6 +10,7 @@ internal readonly record struct Property
     public bool IsEnum { get; }
     public bool IsNullable { get; }
     public string Name { get; }
+    public EquatableArray<Property> Properties { get; }
     public string TypeName { get; }
 
     public Property(IPropertySymbol symbol)
@@ -20,6 +23,9 @@ internal readonly record struct Property
         IsNullable = IsPropNullable(symbol);
         Name = symbol.Name;
         FullyQualifiedTypeName = symbol.Type.ToDisplayString();
+        Properties = type is INamedTypeSymbol nts
+            ? nts.GetProperties().ToImmutableArray()
+            : ImmutableArray<Property>.Empty;
     }
 
     private static bool IsPropNullable(IPropertySymbol prop) =>
