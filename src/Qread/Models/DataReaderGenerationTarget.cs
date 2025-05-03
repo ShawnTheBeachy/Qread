@@ -41,7 +41,9 @@ internal sealed record DataReaderGenerationTarget
                         : "struct"
                     : parent.IsRecord
                         ? "record"
-                        : "class";
+                        : parent.TypeKind == TypeKind.Interface
+                            ? "interface"
+                            : "class";
             parents.Insert(0, $"partial {typeText} {parent.Name}");
             parent = parent.ContainingType;
         } while (parent is not null);
