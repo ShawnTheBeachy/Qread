@@ -49,6 +49,48 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task ByteArrayReader_ShouldBeGenerated_WhenPropertyIsByteArray()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required byte[] Value { get; init; }
+                public required Byte[] Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task ByteArrayReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableByteArray()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required byte[]? Value { get; init; }
+                public required Byte[]? Value2 { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task ByteReader_ShouldBeGenerated_WhenPropertyIsByte()
     {
         // Arrange.

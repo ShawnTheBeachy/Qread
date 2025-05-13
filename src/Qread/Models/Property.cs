@@ -7,6 +7,7 @@ namespace Qread.Models;
 internal readonly record struct Property
 {
     public DbTypeInternal? DbType { get; }
+    public bool IsArray { get; }
     public bool IsNullable { get; }
     public string Name { get; }
     public TypeInternal Type { get; }
@@ -19,6 +20,11 @@ internal readonly record struct Property
             ? underlying
             : symbol.Type;
         Type = new TypeInternal(type);
+        IsArray = type.TypeKind == TypeKind.Array;
+
+        if (type is IArrayTypeSymbol arrayTypeSymbol)
+            type = arrayTypeSymbol.ElementType;
+
         DbType = type.Name switch
         {
             nameof(Boolean) => DbTypeInternal.Bool,

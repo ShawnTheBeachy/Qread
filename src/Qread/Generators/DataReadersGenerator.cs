@@ -276,7 +276,8 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
             : prop.DbType switch
             {
                 DbTypeInternal.Bool => $"{orNull}reader.GetBoolean({index})",
-                DbTypeInternal.Byte => $"{orNull}reader.GetByte({index})",
+                DbTypeInternal.Byte =>
+                    $"{orNull}{(prop.IsArray ? $"(byte[])reader.GetValue({index})" : $"reader.GetByte({index})")}",
                 DbTypeInternal.Char => $"{orNull}reader.GetChar({index})",
                 DbTypeInternal.DateOnly =>
                     $"{orNull}DateOnly.FromDateTime(reader.GetDateTime({index}))",
