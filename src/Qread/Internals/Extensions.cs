@@ -47,9 +47,6 @@ internal static class Extensions
         if (typeSymbol.IsAbstract)
             yield break;
 
-        if (typeSymbol.IsValueType)
-            yield break;
-
         while (true)
         {
             foreach (var prop in typeSymbol.GetMembers())
