@@ -823,6 +823,26 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task Target_ShouldBeHandled_WhenItIsNestedInInterface()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            public partial interface ITest
+            {
+               [GenerateDataReader(IsExact = true)]
+               public readonly record struct TestDto;
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task Target_ShouldBeHandled_WhenItIsRecord()
     {
         // Arrange.
