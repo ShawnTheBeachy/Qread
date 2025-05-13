@@ -89,6 +89,7 @@ internal static class Extensions
         typeKind switch
         {
             TypeKindInternal.Class => "class",
+            TypeKindInternal.Interface => "interface",
             TypeKindInternal.Record => "record",
             TypeKindInternal.RecordStruct => "record struct",
             TypeKindInternal.Struct => "struct",
@@ -102,7 +103,9 @@ internal static class Extensions
                 : TypeKindInternal.Struct
             : symbol.IsRecord
                 ? TypeKindInternal.Record
-                : TypeKindInternal.Class;
+                : symbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Interface
+                    ? TypeKindInternal.Interface
+                    : TypeKindInternal.Class;
 
     public static void WriteLineIndented(this IndentedTextWriter writer, string value)
     {

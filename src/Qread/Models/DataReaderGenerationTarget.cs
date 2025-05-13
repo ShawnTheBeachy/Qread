@@ -15,35 +15,6 @@ internal readonly record struct DataReaderGenerationTarget
         INamedTypeSymbol symbol
     )
     {
-        var typeDeclarationSyntax = (TypeDeclarationSyntax)context.TargetNode;
-
-        if (!IsNamedTypeSymbol(context, typeDeclarationSyntax, out var namedTypeSymbol))
-            return null;
-
-        if (!HasParameterlessConstructor(namedTypeSymbol!))
-            return null;
-
-        var properties = GetProperties(namedTypeSymbol!, typeDeclarationSyntax).ToImmutableArray();
-
-        var parents = new List<string>();
-        var parent = namedTypeSymbol!;
-
-        do
-        {
-            var typeText =
-                parent.TypeKind == TypeKind.Struct
-                    ? parent.IsRecord
-                        ? "record struct"
-                        : "struct"
-                    : parent.IsRecord
-                        ? "record"
-                        : parent.TypeKind == TypeKind.Interface
-                            ? "interface"
-                            : "class";
-            parents.Insert(0, $"partial {typeText} {parent.Name}");
-            parent = parent.ContainingType;
-        } while (parent is not null);
-
         Type = new TypeInternal(symbol);
         IsExact = context.GetGenerateDataReaderAttribute()?.GetNamedArg("IsExact")?.Value is true;
         Namespace = symbol.ContainingNamespace.ToDisplayString();

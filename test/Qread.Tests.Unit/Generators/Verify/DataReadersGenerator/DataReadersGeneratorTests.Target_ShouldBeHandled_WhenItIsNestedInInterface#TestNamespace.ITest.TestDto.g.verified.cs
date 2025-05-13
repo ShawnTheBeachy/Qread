@@ -10,17 +10,18 @@ partial interface ITest
 {
     partial record struct TestDto
     {
-        public static TestDto FromDataReader(IDataReader reader)
+        public static global::TestNamespace.ITest.TestDto FromDataReader(IDataReader reader)
         {
-            var instance = new TestDto
+            var i = -1;
+            var instance = new global::TestNamespace.ITest.TestDto
             {
             };
             return instance;
         }
 
-        public static IReadOnlyList<TestDto> ListFromDataReader(IDataReader reader)
+        public static IReadOnlyList<global::TestNamespace.ITest.TestDto> ListFromDataReader(IDataReader reader)
         {
-            var results = new List<TestDto>();
+            var results = new List<global::TestNamespace.ITest.TestDto>();
 
             while (reader.Read())
             {
