@@ -8,19 +8,20 @@ namespace TestNamespace;
 
 partial record TestDto
 {
-    public static TestDto FromDataReader(IDataReader reader)
+    public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
-        var instance = new TestDto
+        var i = -1;
+        var instance = new global::TestNamespace.TestDto
         {
-            Count = reader.IsDBNull(0) ? null : reader.GetInt16(0),
-            Count2 = reader.IsDBNull(1) ? null : reader.GetInt16(1)
+            Count = reader.IsDBNull(++i) ? null : reader.GetInt16(i),
+            Count2 = reader.IsDBNull(++i) ? null : reader.GetInt16(i)
         };
         return instance;
     }
 
-    public static IReadOnlyList<TestDto> ListFromDataReader(IDataReader reader)
+    public static IReadOnlyList<global::TestNamespace.TestDto> ListFromDataReader(IDataReader reader)
     {
-        var results = new List<TestDto>();
+        var results = new List<global::TestNamespace.TestDto>();
 
         while (reader.Read())
         {

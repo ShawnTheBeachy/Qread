@@ -1,5 +1,7 @@
 ﻿using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
+using Qread.Models;
 using Qread.Sources;
 
 namespace Qread.Internals;
@@ -40,9 +42,75 @@ internal static class Extensions
         return null;
     }
 
+    public static IEnumerable<Property> GetProperties(this ITypeSymbol typeSymbol)
+    {
+        if (typeSymbol.IsAbstract)
+            yield break;
+
+        if (typeSymbol.IsValueType)
+            yield break;
+
+        while (true)
+        {
+            foreach (var prop in typeSymbol.GetMembers())
+            {
+                if (prop is not IPropertySymbol propSymbol)
+                    continue;
+
+                if (
+                    propSymbol.DeclaredAccessibility != Accessibility.Public
+                    && propSymbol.DeclaredAccessibility != Accessibility.Internal
+                )
+                    continue;
+
+                if (propSymbol.IsReadOnly)
+                    continue;
+
+                if (typeSymbol.IsRecord && propSymbol.Name == "EqualityContract")
+                    continue;
+
+                yield return new Property(propSymbol);
+            }
+
+            if (typeSymbol.BaseType is null)
+                yield break;
+
+            typeSymbol = typeSymbol.BaseType;
+        }
+    }
+
     public static void StartBlock(this IndentedTextWriter writer)
     {
         writer.WriteLine("{");
         writer.Indent++;
+    }
+
+    public static string ToDeclaration(this TypeKindInternal typeKind) =>
+        typeKind switch
+        {
+            TypeKindInternal.Class => "class",
+            TypeKindInternal.Interface => "interface",
+            TypeKindInternal.Record => "record",
+            TypeKindInternal.RecordStruct => "record struct",
+            TypeKindInternal.Struct => "struct",
+            _ => "",
+        };
+
+    public static TypeKindInternal TypeKind(this ITypeSymbol symbol) =>
+        symbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Struct
+            ? symbol.IsRecord
+                ? TypeKindInternal.RecordStruct
+                : TypeKindInternal.Struct
+            : symbol.IsRecord
+                ? TypeKindInternal.Record
+                : symbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Interface
+                    ? TypeKindInternal.Interface
+                    : TypeKindInternal.Class;
+
+    public static void WriteLineIndented(this IndentedTextWriter writer, string value)
+    {
+        writer.Indent++;
+        writer.WriteLine(value);
+        writer.Indent--;
     }
 }

@@ -8,17 +8,18 @@ namespace TestNamespace;
 
 partial struct TestDto
 {
-    public static TestDto FromDataReader(IDataReader reader)
+    public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
-        var instance = new TestDto
+        var i = -1;
+        var instance = new global::TestNamespace.TestDto
         {
         };
         return instance;
     }
 
-    public static IReadOnlyList<TestDto> ListFromDataReader(IDataReader reader)
+    public static IReadOnlyList<global::TestNamespace.TestDto> ListFromDataReader(IDataReader reader)
     {
-        var results = new List<TestDto>();
+        var results = new List<global::TestNamespace.TestDto>();
 
         while (reader.Read())
         {

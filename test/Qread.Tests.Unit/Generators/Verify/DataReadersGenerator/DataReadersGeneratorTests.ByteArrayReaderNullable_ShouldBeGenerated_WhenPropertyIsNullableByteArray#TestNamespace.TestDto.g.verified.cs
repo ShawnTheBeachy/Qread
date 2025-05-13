@@ -13,7 +13,8 @@ partial record TestDto
         var i = -1;
         var instance = new global::TestNamespace.TestDto
         {
-            Id = reader.GetGuid(++i)
+            Value = reader.IsDBNull(++i) ? null : (byte[])reader.GetValue(i),
+            Value2 = reader.IsDBNull(++i) ? null : (byte[])reader.GetValue(i)
         };
         return instance;
     }
