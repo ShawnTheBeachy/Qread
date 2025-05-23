@@ -16,7 +16,8 @@
         <Company>asdfDEV</Company>
         <PackageDescription>Blazing fast DataReader to POCO mapping.</PackageDescription>
         <RepositoryUrl>https://github.com/ShawnTheBeachy/qread</RepositoryUrl>
-        <PublishRepositoryUrl>false</PublishRepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageProjectUrl>https://github.com/ShawnTheBeachy/qread</PackageProjectUrl>
         <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
         <PackageTags>.net;datareader;</PackageTags>
         <PackageIcon>assets/nuget-package-icon.png</PackageIcon>
