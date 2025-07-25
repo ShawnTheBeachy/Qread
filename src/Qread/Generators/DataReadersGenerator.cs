@@ -292,6 +292,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 DbTypeInternal.Int32 => $"{orNull}reader.GetInt32({index})",
                 DbTypeInternal.Int64 => $"{orNull}reader.GetInt64({index})",
                 DbTypeInternal.String => $"{orNull}reader.GetString({index})",
+                DbTypeInternal.TimeSpan => $"{orNull}(TimeSpan)reader.GetValue({index})",
                 _ => null,
             };
 

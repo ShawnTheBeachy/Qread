@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Qread.Generators;
@@ -927,6 +928,46 @@ public sealed class DataReadersGeneratorTests
                 )
             )
             .IsEmpty();
+    }
+
+    [Test]
+    public Task TimeSpanReader_ShouldBeGenerated_WhenPropertyIsTimeSpan()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required TimeSpan Duration { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task TimeSpanReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableTimeSpan()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required TimeSpan? Duration { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
     }
 
     [Test]
