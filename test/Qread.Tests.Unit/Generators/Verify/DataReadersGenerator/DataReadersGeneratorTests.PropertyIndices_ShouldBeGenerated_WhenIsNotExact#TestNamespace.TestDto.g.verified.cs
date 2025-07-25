@@ -27,7 +27,7 @@ partial record TestDto
 
         var instance = new global::TestNamespace.TestDto
         {
-            Name = reader.GetString(_propIndices["Name"])
+            Name = reader.GetString(_propIndices[Name])
         };
         return instance;
     }

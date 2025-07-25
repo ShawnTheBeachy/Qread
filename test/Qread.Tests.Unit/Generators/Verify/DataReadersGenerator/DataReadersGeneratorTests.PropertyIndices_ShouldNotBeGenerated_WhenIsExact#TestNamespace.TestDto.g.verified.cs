@@ -10,10 +10,9 @@ partial record TestDto
 {
     public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
-        var i = -1;
         var instance = new global::TestNamespace.TestDto
         {
-            Name = reader.GetString(++i)
+            Name = reader.GetString(0)
         };
         return instance;
     }

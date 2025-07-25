@@ -10,11 +10,10 @@ partial record TestDto
 {
     public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
-        var i = -1;
         var instance = new global::TestNamespace.TestDto
         {
-            Name = reader.IsDBNull(++i) ? null : reader.GetString(i),
-            Name2 = reader.IsDBNull(++i) ? null : reader.GetString(i)
+            Name = reader.IsDBNull(0) ? null : reader.GetString(0),
+            Name2 = reader.IsDBNull(1) ? null : reader.GetString(1)
         };
         return instance;
     }

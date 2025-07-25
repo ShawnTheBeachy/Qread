@@ -78,8 +78,6 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
 
         if (!isExact)
             GeneratePropertyIndices(writer);
-        else
-            writer.WriteLine("var i = -1;");
 
         writer.WriteLine($"var instance = new global::{type.FullNameIgnoreNullable}");
         writer.StartBlock();
@@ -87,7 +85,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         for (var i = 0; i < type.Properties.Length; i++)
         {
             var prop = type.Properties[i];
-            var setter = GeneratePropertySetter(prop, isExact, true);
+            var setter = GeneratePropertySetter(prop, isExact, i);
             writer.WriteLine(
                 $"{prop.Name} = {setter}{(i < type.Properties.Length - 1 ? "," : "")}"
             );
@@ -139,18 +137,11 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.WriteLineNoTabs("");
     }
 
-    private static string GeneratePropertySetter(Property prop, bool isExact, bool isRoot)
+    private static string GeneratePropertySetter(Property prop, bool isExact, int i)
     {
-        var propIndexKey = isRoot ? $"\"{prop.Name}\"" : $"$\"{{prefix}}{prop.Name}\"";
-        var index = isExact
-            ? prop.IsNullable
-                ? "i"
-                : "++i"
-            : $"{(isRoot ? "_" : "")}propIndices[{propIndexKey}]";
-        var orNull = prop.IsNullable
-            ? $"reader.IsDBNull({(isExact ? "++i" : $"{(isRoot ? "_" : "")}propIndices[{propIndexKey}]")}) ? null : "
-            : "";
-        var setter = prop.Type.IsEnum
+        var index = isExact ? i.ToString() : $"_propIndices[{prop.Name}]";
+        var orNull = prop.IsNullable ? $"reader.IsDBNull({index}) ? null : " : "";
+        return prop.Type.IsEnum
             ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"
             : prop.DbType switch
             {
@@ -172,23 +163,8 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 DbTypeInternal.Int64 => $"{orNull}reader.GetInt64({index})",
                 DbTypeInternal.String => $"{orNull}reader.GetString({index})",
                 DbTypeInternal.TimeSpan => $"{orNull}(TimeSpan)reader.GetValue({index})",
-                _ => null,
+                _ => $"throw new Exception(\"Unknown type {prop.Type.FullName}.\")",
             };
-
-        return setter switch
-        {
-            null when prop.Type.Properties.Length > 0 =>
-                $"global::{prop.Type.FullNameIgnoreNullable}.FromDataReader(reader{(isExact ? ", ref i" : "")}"
-                    + (isExact ? "" : $", {(isRoot ? "_" : "")}propIndices")
-                    + (
-                        isExact
-                            ? ""
-                            : $", {(isRoot ? $"\"{prop.Name}_\"" : $"$\"{{prefix}}{prop.Name}_\"")}"
-                    )
-                    + $"){(prop.IsNullable ? "" : "!")}",
-            null => $"throw new Exception(\"Unknown type {prop.Type.FullName}.\")",
-            _ => setter,
-        };
     }
 
     public void Initialize(IncrementalGeneratorInitializationContext context)

@@ -10,10 +10,9 @@ partial record TestDto
 {
     public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
-        var i = -1;
         var instance = new global::TestNamespace.TestDto
         {
-            DateOfBirth = DateOnly.FromDateTime(reader.GetDateTime(++i))
+            DateOfBirth = DateOnly.FromDateTime(reader.GetDateTime(0))
         };
         return instance;
     }

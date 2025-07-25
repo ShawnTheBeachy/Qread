@@ -12,7 +12,6 @@ partial interface ITest
     {
         public static global::TestNamespace.ITest.TestDto FromDataReader(IDataReader reader)
         {
-            var i = -1;
             var instance = new global::TestNamespace.ITest.TestDto
             {
             };
