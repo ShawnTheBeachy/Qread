@@ -1,4 +1,3 @@
-using System.Data;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Qread.Generators;
@@ -580,83 +579,6 @@ public sealed class DataReadersGeneratorTests
             {
                 public required long? Count { get; init; }
                 public required Int64? Count2 { get; init; }
-            }
-            """;
-
-        // Assert.
-        return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
-    public Task NestedObject_ShouldBeCreated_WhenItIsValidTarget()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader(IsExact = true)]
-            public sealed partial record Foo
-            {
-                public required string FirstValue { get; init; }
-                public required Bar SecondValue { get; init; }
-            }
-
-            public sealed record Bar
-            {
-                public required string Value { get; init; }
-            }
-            """;
-
-        // Assert.
-        return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
-    public Task NestedObject_ShouldNotBeDuplicated_WhenSameTypeIsUsedForMultipleProperties()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader(IsExact = true)]
-            public sealed partial record Foo
-            {
-                public required Bar FirstValue { get; init; }
-                public required Bar SecondValue { get; init; }
-            }
-
-            public sealed record Bar
-            {
-                public required string Value { get; init; }
-            }
-            """;
-
-        // Assert.
-        return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
-    public Task NestedObjectNullable_ShouldBeCreated_WhenPropertyIsNullableNestedObject()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader(IsExact = true)]
-            public sealed partial record Foo
-            {
-                public required Bar? Value { get; init; }
-            }
-
-            public sealed record Bar
-            {
-                public required string Value { get; init; }
             }
             """;
 

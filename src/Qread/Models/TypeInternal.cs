@@ -35,20 +35,4 @@ internal sealed record TypeInternal
 
         Containers = parents.ToImmutableArray();
     }
-
-    public IEnumerable<Property> DeepProperties()
-    {
-        return GetProps(this);
-
-        IEnumerable<Property> GetProps(TypeInternal type)
-        {
-            foreach (var prop in type.Properties)
-            {
-                yield return prop;
-
-                foreach (var child in GetProps(prop.Type))
-                    yield return child;
-            }
-        }
-    }
 }
