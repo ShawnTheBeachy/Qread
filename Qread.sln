@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qread.Tests.Unit", "test\Qr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qread.Generated.Tests.Unit", "test\Qread.Generated.Tests.Unit\Qread.Generated.Tests.Unit.csproj", "{1FFD35CE-E96C-4219-8811-933E779347DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qread.Benchmarks", "benchmarks\Qread.Benchmarks\Qread.Benchmarks.csproj", "{18E41F01-E747-422F-B2F9-F61F77ADFC35}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{B5E77D89-F9A2-450D-85B2-AD6D5034DF26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +38,15 @@ Global
 		{1FFD35CE-E96C-4219-8811-933E779347DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FFD35CE-E96C-4219-8811-933E779347DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FFD35CE-E96C-4219-8811-933E779347DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E41F01-E747-422F-B2F9-F61F77ADFC35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E41F01-E747-422F-B2F9-F61F77ADFC35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E41F01-E747-422F-B2F9-F61F77ADFC35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E41F01-E747-422F-B2F9-F61F77ADFC35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7FFD9523-6DA0-4754-AA18-20EFB9832157} = {F37A89B6-7905-48B1-B23C-4F451ADA6355}
 		{517DA4CC-73B4-4B32-A72E-C03D367F60CF} = {9D1CA51C-21FA-429A-AB1E-FD0A8C00C644}
 		{1FFD35CE-E96C-4219-8811-933E779347DB} = {9D1CA51C-21FA-429A-AB1E-FD0A8C00C644}
+		{18E41F01-E747-422F-B2F9-F61F77ADFC35} = {B5E77D89-F9A2-450D-85B2-AD6D5034DF26}
 	EndGlobalSection
 EndGlobal
