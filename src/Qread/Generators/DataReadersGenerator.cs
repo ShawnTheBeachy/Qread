@@ -57,7 +57,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
 
             GenerateFromDataReaderMethod(target.Type, target.IsExact, indentWriter);
             indentWriter.WriteLineNoTabs("");
-            GenerateListFromDataReaderMethod(target, indentWriter);
+            GenerateAsyncEnumerableFromDataReaderMethod(target, indentWriter);
             EndContainers(target.Type, indentWriter);
 
             var hintName = $"{target.Type.FullName}.g.cs";
@@ -97,26 +97,28 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.EndBlock();
     }
 
-    private static void GenerateListFromDataReaderMethod(
+    private static void GenerateAsyncEnumerableFromDataReaderMethod(
         DataReaderGenerationTarget target,
         IndentedTextWriter writer
     )
     {
         writer.WriteLine(
-            $"public static IReadOnlyList<global::{target.Type.FullName}> ListFromDataReader(IDataReader reader)"
+            $"public static async IAsyncEnumerable<global::{target.Type.FullName}> AsyncEnumerableFromDataReader(global::System.Data.IDataReader reader, [global::System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)"
         );
         writer.StartBlock();
-        writer.WriteLine(
-            $"var results = new List<global::{target.Type.FullNameIgnoreNullable}>();"
-        );
-        writer.WriteLineNoTabs("");
-        writer.WriteLine("while (reader.Read())");
+        writer.WriteLine("var dbReader = reader as global::System.Data.Common.DbDataReader;");
+        writer.WriteLine("while (await ReadAsync())");
         writer.StartBlock();
         writer.WriteLine("var instance = FromDataReader(reader);");
-        writer.WriteLine("results.Add(instance);");
+        writer.WriteLine("yield return instance;");
         writer.EndBlock();
         writer.WriteLineNoTabs("");
-        writer.WriteLine("return results;");
+        writer.WriteLine("async ValueTask<bool> ReadAsync()");
+        writer.StartBlock();
+        writer.WriteLine("return dbReader is not null");
+        writer.WriteLineIndented("? await dbReader.ReadAsync(cancellationToken)");
+        writer.WriteLineIndented(": reader.Read();");
+        writer.EndBlock();
         writer.EndBlock();
     }
 
@@ -139,7 +141,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
 
     private static string GeneratePropertySetter(Property prop, bool isExact, int i)
     {
-        var index = isExact ? i.ToString() : $"_propIndices[{prop.Name}]";
+        var index = isExact ? i.ToString() : $"_propIndices[\"{prop.Name}\"]";
         var orNull = prop.IsNullable ? $"reader.IsDBNull({index}) ? null : " : "";
         return prop.Type.IsEnum
             ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"
