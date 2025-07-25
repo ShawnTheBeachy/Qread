@@ -12,8 +12,7 @@ partial record TestDto
     {
         var instance = new global::TestNamespace.TestDto
         {
-            Count = reader.IsDBNull(0) ? null : reader.GetInt64(0),
-            Count2 = reader.IsDBNull(1) ? null : reader.GetInt64(1)
+            Duration = reader.IsDBNull(0) ? null : (TimeSpan)reader.GetValue(0)
         };
         return instance;
     }

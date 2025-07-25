@@ -16,4 +16,5 @@ public enum DbTypeInternal
     Int32,
     Int64,
     String,
+    TimeSpan,
 }

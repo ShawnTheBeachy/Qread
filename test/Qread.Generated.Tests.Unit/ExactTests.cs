@@ -6,7 +6,9 @@ namespace Qread.Generated.Tests.Unit;
 public sealed partial class ExactTests
 {
     [Test]
-    public async Task Properties_ShouldBeSetByIndex_WhenMappingIsExact()
+    public async Task Properties_ShouldBeSetByIndex_WhenMappingIsExact(
+        CancellationToken cancellationToken
+    )
     {
         // Arrange.
         var dataReader = Substitute.For<IDataReader>();
@@ -31,7 +33,15 @@ public sealed partial class ExactTests
             .Returns((int)Sex.Male, (int)Sex.Female, (int)Sex.Male, (int)Sex.Male);
 
         // Act.
-        var teamMembers = TeamMember.ListFromDataReader(dataReader);
+        var teamMembers = new List<TeamMember>();
+
+        await foreach (
+            var teamMember in TeamMember.AsyncEnumerableFromDataReader(
+                dataReader,
+                cancellationToken
+            )
+        )
+            teamMembers.Add(teamMember);
 
         // Assert.
         using var asserts = Assert.Multiple();

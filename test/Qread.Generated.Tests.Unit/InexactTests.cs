@@ -6,7 +6,9 @@ namespace Qread.Generated.Tests.Unit;
 public sealed partial class InexactTests
 {
     [Test]
-    public async Task Properties_ShouldBeSetByColumnName_WhenMappingIsInexact()
+    public async Task Properties_ShouldBeSetByColumnName_WhenMappingIsInexact(
+        CancellationToken cancellationToken
+    )
     {
         // Arrange.
         var dataReader = Substitute.For<IDataReader>();
@@ -29,7 +31,15 @@ public sealed partial class InexactTests
             );
 
         // Act.
-        var teamMembers = TeamMember.ListFromDataReader(dataReader);
+        var teamMembers = new List<TeamMember>();
+
+        await foreach (
+            var teamMember in TeamMember.AsyncEnumerableFromDataReader(
+                dataReader,
+                cancellationToken
+            )
+        )
+            teamMembers.Add(teamMember);
 
         // Assert.
         using var asserts = Assert.Multiple();

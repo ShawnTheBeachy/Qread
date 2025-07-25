@@ -41,6 +41,7 @@ internal readonly record struct Property
             nameof(Int32) => DbTypeInternal.Int32,
             nameof(Int64) => DbTypeInternal.Int64,
             nameof(String) => DbTypeInternal.String,
+            nameof(TimeSpan) => DbTypeInternal.TimeSpan,
             _ => null,
         };
     }

@@ -12,24 +12,27 @@ partial interface ITest
     {
         public static global::TestNamespace.ITest.TestDto FromDataReader(IDataReader reader)
         {
-            var i = -1;
             var instance = new global::TestNamespace.ITest.TestDto
             {
             };
             return instance;
         }
 
-        public static IReadOnlyList<global::TestNamespace.ITest.TestDto> ListFromDataReader(IDataReader reader)
+        public static async IAsyncEnumerable<global::TestNamespace.ITest.TestDto> AsyncEnumerableFromDataReader(global::System.Data.IDataReader reader, [global::System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            var results = new List<global::TestNamespace.ITest.TestDto>();
-
-            while (reader.Read())
+            var dbReader = reader as global::System.Data.Common.DbDataReader;
+            while (await ReadAsync())
             {
                 var instance = FromDataReader(reader);
-                results.Add(instance);
+                yield return instance;
             }
 
-            return results;
+            async ValueTask<bool> ReadAsync()
+            {
+                return dbReader is not null
+                    ? await dbReader.ReadAsync(cancellationToken)
+                    : reader.Read();
+            }
         }
     }
 }

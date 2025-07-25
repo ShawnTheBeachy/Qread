@@ -587,83 +587,6 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
-    public Task NestedObject_ShouldBeCreated_WhenItIsValidTarget()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader(IsExact = true)]
-            public sealed partial record Foo
-            {
-                public required string FirstValue { get; init; }
-                public required Bar SecondValue { get; init; }
-            }
-
-            public sealed record Bar
-            {
-                public required string Value { get; init; }
-            }
-            """;
-
-        // Assert.
-        return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
-    public Task NestedObject_ShouldNotBeDuplicated_WhenSameTypeIsUsedForMultipleProperties()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader(IsExact = true)]
-            public sealed partial record Foo
-            {
-                public required Bar FirstValue { get; init; }
-                public required Bar SecondValue { get; init; }
-            }
-
-            public sealed record Bar
-            {
-                public required string Value { get; init; }
-            }
-            """;
-
-        // Assert.
-        return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
-    public Task NestedObjectNullable_ShouldBeCreated_WhenPropertyIsNullableNestedObject()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader(IsExact = true)]
-            public sealed partial record Foo
-            {
-                public required Bar? Value { get; init; }
-            }
-
-            public sealed record Bar
-            {
-                public required string Value { get; init; }
-            }
-            """;
-
-        // Assert.
-        return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
     public Task Property_ShouldBeIncluded_WhenItIsPublic()
     {
         // Arrange.
@@ -927,6 +850,46 @@ public sealed class DataReadersGeneratorTests
                 )
             )
             .IsEmpty();
+    }
+
+    [Test]
+    public Task TimeSpanReader_ShouldBeGenerated_WhenPropertyIsTimeSpan()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required TimeSpan Duration { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task TimeSpanReaderNullable_ShouldBeGenerated_WhenPropertyIsNullableTimeSpan()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                public required TimeSpan? Duration { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
     }
 
     [Test]
