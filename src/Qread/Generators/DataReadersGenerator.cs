@@ -143,12 +143,12 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     {
         var index =
             isExact ? i.ToString()
-            : prop.IsNullable ? "index"
+            : prop.IsNullable ? $"index{prop.Name}"
             : $"_propIndices[\"{prop.Name}\"]";
         var orNullCondition =
             isExact || !prop.IsNullable
                 ? ""
-                : $"!_propIndices.TryGetValue(\"{prop.Name}\", out var index) ? null : ";
+                : $"!_propIndices.TryGetValue(\"{prop.Name}\", out var index{prop.Name}) ? null : ";
         var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
         return prop.Type.IsEnum
             ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"

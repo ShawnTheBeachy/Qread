@@ -28,7 +28,7 @@ partial record TestDto
         var instance = new global::TestNamespace.TestDto
         {
             FirstName = reader.GetString(_propIndices["FirstName"]),
-            LastName = !_propIndices.TryGetValue("LastName", out var index) ? null : reader.IsDBNull(index) ? null : reader.GetString(index)
+            LastName = !_propIndices.TryGetValue("LastName", out var indexLastName) ? null : reader.IsDBNull(indexLastName) ? null : reader.GetString(indexLastName)
         };
         return instance;
     }
