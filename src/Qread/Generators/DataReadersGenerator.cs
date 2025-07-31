@@ -115,7 +115,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
 
     private static void GeneratePropertyIndices(IndentedTextWriter writer)
     {
-        writer.WriteLine("var propIndices = new Dictionary<string, int>();");
+        writer.WriteLine("var propIndices = new Dictionary<string, int>(reader.FieldCount);");
         writer.WriteLineNoTabs("");
         writer.WriteLine("for (var i = reader.FieldCount - 1; i >= 0; i--)");
         writer.StartBlock();
