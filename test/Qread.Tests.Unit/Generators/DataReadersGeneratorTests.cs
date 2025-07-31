@@ -658,7 +658,8 @@ public sealed class DataReadersGeneratorTests
             [GenerateDataReader]
             public sealed partial record TestDto
             {
-                public required string Name { get; init; }
+                public required string FirstName { get; init; }
+                public required string? LastName { get; init; }
             }
             """;
 

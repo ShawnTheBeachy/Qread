@@ -141,8 +141,15 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
 
     private static string GeneratePropertySetter(Property prop, bool isExact, int i)
     {
-        var index = isExact ? i.ToString() : $"_propIndices[\"{prop.Name}\"]";
-        var orNull = prop.IsNullable ? $"reader.IsDBNull({index}) ? null : " : "";
+        var index =
+            isExact ? i.ToString()
+            : prop.IsNullable ? "index"
+            : $"_propIndices[\"{prop.Name}\"]";
+        var orNullCondition =
+            isExact || !prop.IsNullable
+                ? ""
+                : $"!_propIndices.TryGetValue(\"{prop.Name}\", out var index) ? null : ";
+        var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
         return prop.Type.IsEnum
             ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"
             : prop.DbType switch
