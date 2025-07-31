@@ -10,7 +10,7 @@ partial record TestDto
 {
     public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
-        var propIndices = new Dictionary<string, int>();
+        var propIndices = new Dictionary<string, int>(reader.FieldCount);
 
         for (var i = reader.FieldCount - 1; i >= 0; i--)
         {
