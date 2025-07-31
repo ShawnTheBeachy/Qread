@@ -46,15 +46,6 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 """
             );
             StartContainers(target.Type, indentWriter);
-
-            if (!target.IsExact)
-            {
-                indentWriter.WriteLine(
-                    "private static FrozenDictionary<string, int>? _propIndices;"
-                );
-                indentWriter.WriteLineNoTabs("");
-            }
-
             GenerateFromDataReaderMethod(target.Type, target.IsExact, indentWriter);
             indentWriter.WriteLineNoTabs("");
             GenerateAsyncEnumerableFromDataReaderMethod(target, indentWriter);
@@ -124,17 +115,12 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
 
     private static void GeneratePropertyIndices(IndentedTextWriter writer)
     {
-        writer.WriteLine("if (_propIndices is null)");
-        writer.StartBlock();
-        writer.WriteLine("var unfrozenPropIndices = new Dictionary<string, int>();");
+        writer.WriteLine("var propIndices = new Dictionary<string, int>();");
         writer.WriteLineNoTabs("");
         writer.WriteLine("for (var i = reader.FieldCount - 1; i >= 0; i--)");
         writer.StartBlock();
         writer.WriteLine("var columnName = reader.GetName(i);");
-        writer.WriteLine("unfrozenPropIndices[columnName] = i;");
-        writer.EndBlock();
-        writer.WriteLineNoTabs("");
-        writer.WriteLine("_propIndices = unfrozenPropIndices.ToFrozenDictionary();");
+        writer.WriteLine("propIndices[columnName] = i;");
         writer.EndBlock();
         writer.WriteLineNoTabs("");
     }
@@ -144,11 +130,11 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         var index =
             isExact ? i.ToString()
             : prop.IsNullable ? $"index{prop.Name}"
-            : $"_propIndices[\"{prop.Name}\"]";
+            : $"propIndices[\"{prop.Name}\"]";
         var orNullCondition =
             isExact || !prop.IsNullable
                 ? ""
-                : $"!_propIndices.TryGetValue(\"{prop.Name}\", out var index{prop.Name}) ? null : ";
+                : $"!propIndices.TryGetValue(\"{prop.Name}\", out var index{prop.Name}) ? null : ";
         var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
         return prop.Type.IsEnum
             ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"

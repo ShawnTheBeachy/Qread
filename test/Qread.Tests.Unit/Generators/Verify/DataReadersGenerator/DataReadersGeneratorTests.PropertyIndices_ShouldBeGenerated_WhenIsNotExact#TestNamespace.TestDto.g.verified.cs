@@ -8,27 +8,20 @@ namespace TestNamespace;
 
 partial record TestDto
 {
-    private static FrozenDictionary<string, int>? _propIndices;
-
     public static global::TestNamespace.TestDto FromDataReader(IDataReader reader)
     {
-        if (_propIndices is null)
+        var propIndices = new Dictionary<string, int>();
+
+        for (var i = reader.FieldCount - 1; i >= 0; i--)
         {
-            var unfrozenPropIndices = new Dictionary<string, int>();
-
-            for (var i = reader.FieldCount - 1; i >= 0; i--)
-            {
-                var columnName = reader.GetName(i);
-                unfrozenPropIndices[columnName] = i;
-            }
-
-            _propIndices = unfrozenPropIndices.ToFrozenDictionary();
+            var columnName = reader.GetName(i);
+            propIndices[columnName] = i;
         }
 
         var instance = new global::TestNamespace.TestDto
         {
-            FirstName = reader.GetString(_propIndices["FirstName"]),
-            LastName = !_propIndices.TryGetValue("LastName", out var indexLastName) ? null : reader.IsDBNull(indexLastName) ? null : reader.GetString(indexLastName)
+            FirstName = reader.GetString(propIndices["FirstName"]),
+            LastName = !propIndices.TryGetValue("LastName", out var indexLastName) ? null : reader.IsDBNull(indexLastName) ? null : reader.GetString(indexLastName)
         };
         return instance;
     }
