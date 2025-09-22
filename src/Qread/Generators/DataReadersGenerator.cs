@@ -77,7 +77,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         if (!isExact)
         {
             GeneratePropertyIndices(writer);
-            writer.WriteLine("return FromDataReader(reader, propIndices, null);");
+            writer.WriteLine("return FromDataReader(reader, propIndices, null)!;");
             writer.EndBlock();
             return;
         }
@@ -132,16 +132,54 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     )
     {
         writer.WriteLine(
-            $"public static global::{type.FullName} FromDataReader(IDataReader reader, Dictionary<string, int> propIndices, string? prefix)"
+            $"public static global::{type.FullName}? FromDataReader(IDataReader reader, Dictionary<string, int> propIndices, string? prefix)"
         );
         writer.StartBlock();
+
+        foreach (var prop in type.Properties)
+        {
+            if (prop.IsNullable)
+                continue;
+
+            if (prop.DbType is null && prop.Type.CanConstruct)
+            {
+                var varName = $"{char.ToLowerInvariant(prop.Name[0])}{prop.Name.Substring(1)}";
+                writer.WriteLine(
+                    $$"""
+                    var {{varName}} = global::{{prop.Type.FullNameIgnoreNullable}}.FromDataReader(reader, propIndices, $"{prefix}{{prop.Name}}_");
+                    """
+                );
+                writer.WriteLineNoTabs("");
+                writer.WriteLine($"if ({varName} is null)");
+                writer.Indent++;
+                writer.WriteLine("return null;");
+                writer.WriteLineNoTabs("");
+                writer.Indent--;
+            }
+            else
+            {
+                writer.WriteLine(
+                    $"if (!propIndices.TryGetValue($\"{{prefix}}{prop.Name}\", out var index{prop.Name})"
+                );
+                writer.Indent++;
+                writer.WriteLine($"|| reader.IsDBNull(index{prop.Name}))");
+                writer.Indent++;
+                writer.WriteLine("return null;");
+                writer.WriteLineNoTabs("");
+                writer.Indent -= 2;
+            }
+        }
+
         writer.WriteLine($"var instance = new global::{type.FullNameIgnoreNullable}");
         writer.StartBlock();
 
         for (var i = 0; i < type.Properties.Length; i++)
         {
             var prop = type.Properties[i];
-            var setter = GeneratePropertySetter(prop, false, i);
+            var setter =
+                prop.IsNullable || prop.DbType is not null || !prop.Type.CanConstruct
+                    ? GeneratePropertySetter(prop, false, i)
+                    : $"{char.ToLowerInvariant(prop.Name[0])}{prop.Name.Substring(1)}";
             writer.WriteLine(
                 $"{prop.Name} = {setter}{(i < type.Properties.Length - 1 ? "," : "")}"
             );
@@ -201,7 +239,9 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 _ => isExact || !prop.Type.CanConstruct
                     ? $"true ? throw new Exception(\"Unknown type {prop.Type.FullName}.\") : default"
                     : $$"""
-                        global::{{prop.Type.FullName}}.FromDataReader(reader, propIndices, $"{prefix}{{prop.Name}}_")
+                        global::{{prop.Type.FullNameIgnoreNullable}}.FromDataReader(reader, propIndices, $"{prefix}{{prop.Name}}_"){{(
+                            prop.IsNullable ? "" : "!"
+                        )}}
                         """,
             };
     }
