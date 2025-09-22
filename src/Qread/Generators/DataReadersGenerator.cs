@@ -158,7 +158,8 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 DbTypeInternal.Int64 => $"{orNull}reader.GetInt64({index})",
                 DbTypeInternal.String => $"{orNull}reader.GetString({index})",
                 DbTypeInternal.TimeSpan => $"{orNull}(TimeSpan)reader.GetValue({index})",
-                _ => $"throw new Exception(\"Unknown type {prop.Type.FullName}.\")",
+                _ =>
+                    $"true ? throw new Exception(\"Unknown type {prop.Type.FullName}.\") : default",
             };
     }
 
