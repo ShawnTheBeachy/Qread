@@ -606,7 +606,7 @@ public sealed class DataReadersGeneratorTests
             [GenerateDataReader]
             public sealed record Test2Dto
             {
-                public required string Value { get; init; }
+                public required TestDto Test { get; init; }
             }
             """;
 
