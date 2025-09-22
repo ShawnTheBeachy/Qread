@@ -12,14 +12,17 @@ internal readonly record struct Property
     public string Name { get; }
     public TypeInternal Type { get; }
 
-    public Property(IPropertySymbol symbol)
+    public Property(IPropertySymbol symbol, TypeCache typeCache)
     {
         IsNullable = IsPropNullable(symbol);
         Name = symbol.Name;
         var type = TryGetNullableValueUnderlyingType(symbol, out var underlying)
             ? underlying
             : symbol.Type;
-        Type = new TypeInternal(type);
+
+        Type = typeCache.TryGetType(type, out var typeInternal)
+            ? typeInternal!
+            : typeCache.CacheType(type, new TypeInternal(type));
         IsArray = type.TypeKind == TypeKind.Array;
 
         if (type is IArrayTypeSymbol arrayTypeSymbol)

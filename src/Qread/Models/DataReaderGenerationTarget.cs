@@ -12,16 +12,20 @@ internal readonly record struct DataReaderGenerationTarget
 
     private DataReaderGenerationTarget(
         GeneratorAttributeSyntaxContext context,
-        INamedTypeSymbol symbol
+        INamedTypeSymbol symbol,
+        TypeCache typeCache
     )
     {
-        Type = new TypeInternal(symbol);
+        Type = typeCache.TryGetType(symbol, out var typeInternal)
+            ? typeInternal!
+            : typeCache.CacheType(symbol, new TypeInternal(symbol));
         IsExact = context.GetGenerateDataReaderAttribute()?.GetNamedArg("IsExact")?.Value is true;
         Namespace = symbol.ContainingNamespace.ToDisplayString();
     }
 
     public static bool TryCreate(
         GeneratorAttributeSyntaxContext context,
+        TypeCache typeCache,
         out DataReaderGenerationTarget? target
     )
     {
@@ -34,7 +38,7 @@ internal readonly record struct DataReaderGenerationTarget
         if (!HasParameterlessConstructor(namedTypeSymbol))
             return false;
 
-        target = new DataReaderGenerationTarget(context, namedTypeSymbol);
+        target = new DataReaderGenerationTarget(context, namedTypeSymbol, typeCache);
         return true;
     }
 

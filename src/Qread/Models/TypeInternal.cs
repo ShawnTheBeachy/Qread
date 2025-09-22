@@ -16,14 +16,13 @@ internal sealed record TypeInternal
             : FullName;
     public bool IsEnum { get; }
     public string Name { get; }
-    public EquatableArray<Property> Properties { get; }
+    public EquatableArray<Property> Properties { get; private set; }
 
     public TypeInternal(ITypeSymbol symbol)
     {
         FullName = symbol.ToDisplayString();
         IsEnum = symbol is INamedTypeSymbol { EnumUnderlyingType: not null };
         Name = symbol.Name;
-        Properties = symbol.GetProperties().ToImmutableArray();
 
         if (symbol.TypeKind == TypeKind.Class && symbol is INamedTypeSymbol namedTypeSymbol)
         {
@@ -51,5 +50,11 @@ internal sealed record TypeInternal
         } while (parent is not null);
 
         Containers = parents.ToImmutableArray();
+    }
+
+    public TypeInternal Init(ITypeSymbol symbol, TypeCache typeCache)
+    {
+        Properties = symbol.GetProperties(typeCache).ToImmutableArray();
+        return this;
     }
 }

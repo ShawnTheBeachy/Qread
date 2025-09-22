@@ -42,7 +42,10 @@ internal static class Extensions
         return null;
     }
 
-    public static IEnumerable<Property> GetProperties(this ITypeSymbol typeSymbol)
+    public static IEnumerable<Property> GetProperties(
+        this ITypeSymbol typeSymbol,
+        TypeCache typeCache
+    )
     {
         if (typeSymbol.IsAbstract)
             yield break;
@@ -66,7 +69,7 @@ internal static class Extensions
                 if (typeSymbol.IsRecord && propSymbol.Name == "EqualityContract")
                     continue;
 
-                yield return new Property(propSymbol);
+                yield return new Property(propSymbol, typeCache);
             }
 
             if (typeSymbol.BaseType is null)

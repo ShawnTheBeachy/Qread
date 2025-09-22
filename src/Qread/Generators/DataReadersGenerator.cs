@@ -58,7 +58,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
             GenerateAsyncEnumerableFromDataReaderMethod(target, indentWriter);
             EndContainers(target.Type, indentWriter);
 
-            var hintName = $"{target.Type.FullName}.g.cs";
+            var hintName = $"{target.Type.FullNameIgnoreNullable}.g.cs";
             context.AddSource(hintName, SourceText.From(baseWriter.ToString(), Encoding.UTF8));
         }
     }
@@ -132,7 +132,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     )
     {
         writer.WriteLine(
-            $"public static global::{type.FullName}? FromDataReader(IDataReader reader, Dictionary<string, int> propIndices, string? prefix)"
+            $"public static global::{type.FullNameIgnoreNullable}? FromDataReader(IDataReader reader, Dictionary<string, int> propIndices, string? prefix)"
         );
         writer.StartBlock();
 
@@ -248,6 +248,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var typeCache = new TypeCache();
         context.RegisterPostInitializationOutput(ctx => ctx.AddGenerateDataReaderAttributeSource());
         var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
             $"{Constants.Namespace}.{GenerateDataReaderAttribute.Name}",
@@ -256,8 +257,8 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                     is ClassDeclarationSyntax
                         or RecordDeclarationSyntax
                         or StructDeclarationSyntax,
-            static (ctx, _) =>
-                DataReaderGenerationTarget.TryCreate(ctx, out var target) ? target : null
+            (ctx, _) =>
+                DataReaderGenerationTarget.TryCreate(ctx, typeCache, out var target) ? target : null
         );
         context.RegisterSourceOutput(
             context.CompilationProvider.Combine(provider.Collect()),

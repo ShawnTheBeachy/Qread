@@ -23,13 +23,14 @@ partial record Test2Dto
 
     public static global::TestNamespace.Test2Dto? FromDataReader(IDataReader reader, Dictionary<string, int> propIndices, string? prefix)
     {
-        if (!propIndices.TryGetValue($"{prefix}Value", out var indexValue)
-            || reader.IsDBNull(indexValue))
-                return null;
+        var test = global::TestNamespace.TestDto.FromDataReader(reader, propIndices, $"{prefix}Test_");
+
+        if (test is null)
+            return null;
 
         var instance = new global::TestNamespace.Test2Dto
         {
-            Value = reader.GetString(propIndices[$"{prefix}Value"])
+            Test = test
         };
         return instance;
     }
