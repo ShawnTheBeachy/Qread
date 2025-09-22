@@ -48,6 +48,13 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
             StartContainers(target.Type, indentWriter);
             GenerateFromDataReaderMethod(target.Type, target.IsExact, indentWriter);
             indentWriter.WriteLineNoTabs("");
+
+            if (!target.IsExact)
+            {
+                GenerateNestedFromDataReaderMethod(target.Type, indentWriter);
+                indentWriter.WriteLineNoTabs("");
+            }
+
             GenerateAsyncEnumerableFromDataReaderMethod(target, indentWriter);
             EndContainers(target.Type, indentWriter);
 
@@ -68,7 +75,12 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.StartBlock();
 
         if (!isExact)
+        {
             GeneratePropertyIndices(writer);
+            writer.WriteLine("return FromDataReader(reader, propIndices, null);");
+            writer.EndBlock();
+            return;
+        }
 
         writer.WriteLine($"var instance = new global::{type.FullNameIgnoreNullable}");
         writer.StartBlock();
@@ -98,6 +110,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         );
         writer.StartBlock();
         writer.WriteLine("var dbReader = reader as global::System.Data.Common.DbDataReader;");
+        writer.WriteLineNoTabs("");
         writer.WriteLine("while (await ReadAsync())");
         writer.StartBlock();
         writer.WriteLine("var instance = FromDataReader(reader);");
@@ -110,6 +123,33 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.WriteLineIndented("? await dbReader.ReadAsync(cancellationToken)");
         writer.WriteLineIndented(": reader.Read();");
         writer.EndBlock();
+        writer.EndBlock();
+    }
+
+    private static void GenerateNestedFromDataReaderMethod(
+        TypeInternal type,
+        IndentedTextWriter writer
+    )
+    {
+        writer.WriteLine(
+            $"public static global::{type.FullName} FromDataReader(IDataReader reader, Dictionary<string, int> propIndices, string? prefix)"
+        );
+        writer.StartBlock();
+        writer.WriteLine($"var instance = new global::{type.FullNameIgnoreNullable}");
+        writer.StartBlock();
+
+        for (var i = 0; i < type.Properties.Length; i++)
+        {
+            var prop = type.Properties[i];
+            var setter = GeneratePropertySetter(prop, false, i);
+            writer.WriteLine(
+                $"{prop.Name} = {setter}{(i < type.Properties.Length - 1 ? "," : "")}"
+            );
+        }
+
+        writer.Indent--;
+        writer.WriteLine("};");
+        writer.WriteLine("return instance;");
         writer.EndBlock();
     }
 
@@ -130,11 +170,11 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         var index =
             isExact ? i.ToString()
             : prop.IsNullable ? $"index{prop.Name}"
-            : $"propIndices[\"{prop.Name}\"]";
+            : $"propIndices[$\"{{prefix}}{prop.Name}\"]";
         var orNullCondition =
             isExact || !prop.IsNullable
                 ? ""
-                : $"!propIndices.TryGetValue(\"{prop.Name}\", out var index{prop.Name}) ? null : ";
+                : $"!propIndices.TryGetValue(\"{{prefix}}{prop.Name}\", out var index{prop.Name}) ? null : ";
         var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
         return prop.Type.IsEnum
             ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"
@@ -158,8 +198,11 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 DbTypeInternal.Int64 => $"{orNull}reader.GetInt64({index})",
                 DbTypeInternal.String => $"{orNull}reader.GetString({index})",
                 DbTypeInternal.TimeSpan => $"{orNull}(TimeSpan)reader.GetValue({index})",
-                _ =>
-                    $"true ? throw new Exception(\"Unknown type {prop.Type.FullName}.\") : default",
+                _ => isExact || !prop.Type.CanConstruct
+                    ? $"true ? throw new Exception(\"Unknown type {prop.Type.FullName}.\") : default"
+                    : $$"""
+                        global::{{prop.Type.FullName}}.FromDataReader(reader, propIndices, $"{prefix}{{prop.Name}}_")
+                        """,
             };
     }
 
@@ -179,10 +222,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(
             context.CompilationProvider.Combine(provider.Collect()),
             (ctx, targets) =>
-                GenerateCode(
-                    ctx,
-                    targets.Right.OfType<DataReaderGenerationTarget>().ToImmutableArray()
-                )
+                GenerateCode(ctx, [.. targets.Right.OfType<DataReaderGenerationTarget>()])
         );
     }
 

@@ -587,6 +587,33 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task NestedObject_ShouldBeGenerated_WhenItHasParameterlessConstructor(
+        CancellationToken cancellationToken
+    )
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader]
+            public sealed partial record TestDto
+            {
+                public required Test2Dto Test2 { get; init; }
+            }
+
+            public sealed record Test2Dto
+            {
+                public required string Value { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task Property_ShouldBeIncluded_WhenItIsPublic()
     {
         // Arrange.
