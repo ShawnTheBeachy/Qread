@@ -212,7 +212,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         var orNullCondition =
             isExact || !prop.IsNullable
                 ? ""
-                : $"!propIndices.TryGetValue(\"{{prefix}}{prop.Name}\", out var index{prop.Name}) ? null : ";
+                : $"!propIndices.TryGetValue($\"{{prefix}}{prop.Name}\", out var index{prop.Name}) ? null : ";
         var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
         return prop.Type.IsEnum
             ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"

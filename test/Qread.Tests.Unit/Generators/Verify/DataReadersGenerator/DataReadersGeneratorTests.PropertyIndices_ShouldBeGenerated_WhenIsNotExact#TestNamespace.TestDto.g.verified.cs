@@ -18,10 +18,19 @@ partial record TestDto
             propIndices[columnName] = i;
         }
 
+        return FromDataReader(reader, propIndices, null)!;
+    }
+
+    public static global::TestNamespace.TestDto? FromDataReader(IDataReader reader, Dictionary<string, int> propIndices, string? prefix)
+    {
+        if (!propIndices.TryGetValue($"{prefix}FirstName", out var indexFirstName)
+            || reader.IsDBNull(indexFirstName))
+                return null;
+
         var instance = new global::TestNamespace.TestDto
         {
-            FirstName = reader.GetString(propIndices["FirstName"]),
-            LastName = !propIndices.TryGetValue("LastName", out var indexLastName) ? null : reader.IsDBNull(indexLastName) ? null : reader.GetString(indexLastName)
+            FirstName = reader.GetString(propIndices[$"{prefix}FirstName"]),
+            LastName = !propIndices.TryGetValue($"{prefix}LastName", out var indexLastName) ? null : reader.IsDBNull(indexLastName) ? null : reader.GetString(indexLastName)
         };
         return instance;
     }
@@ -29,6 +38,7 @@ partial record TestDto
     public static async IAsyncEnumerable<global::TestNamespace.TestDto> AsyncEnumerableFromDataReader(global::System.Data.IDataReader reader, [global::System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var dbReader = reader as global::System.Data.Common.DbDataReader;
+
         while (await ReadAsync())
         {
             var instance = FromDataReader(reader);
