@@ -70,7 +70,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     )
     {
         writer.WriteLine(
-            $"public static global::{type.FullName} FromDataReader(IDataReader reader)"
+            $"public static global::{type.FullNameIgnoreNullable} FromDataReader(IDataReader reader)"
         );
         writer.StartBlock();
 
