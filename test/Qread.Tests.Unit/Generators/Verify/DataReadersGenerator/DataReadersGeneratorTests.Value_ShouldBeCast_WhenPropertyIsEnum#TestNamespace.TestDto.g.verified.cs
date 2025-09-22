@@ -20,6 +20,7 @@ partial record TestDto
     public static async IAsyncEnumerable<global::TestNamespace.TestDto> AsyncEnumerableFromDataReader(global::System.Data.IDataReader reader, [global::System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var dbReader = reader as global::System.Data.Common.DbDataReader;
+
         while (await ReadAsync())
         {
             var instance = FromDataReader(reader);

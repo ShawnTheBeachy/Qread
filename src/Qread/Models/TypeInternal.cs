@@ -7,6 +7,7 @@ namespace Qread.Models;
 
 internal sealed record TypeInternal
 {
+    public bool CanConstruct { get; }
     public EquatableArray<TypeContainer> Containers { get; } = [];
     public string FullName { get; }
     public string FullNameIgnoreNullable =>
@@ -23,6 +24,22 @@ internal sealed record TypeInternal
         IsEnum = symbol is INamedTypeSymbol { EnumUnderlyingType: not null };
         Name = symbol.Name;
         Properties = symbol.GetProperties().ToImmutableArray();
+
+        if (symbol.TypeKind == TypeKind.Class && symbol is INamedTypeSymbol namedTypeSymbol)
+        {
+            var hasParameterlessConstructor = false;
+
+            foreach (var constructor in namedTypeSymbol.Constructors)
+                if (constructor.Parameters.Length == 0)
+                {
+                    hasParameterlessConstructor = true;
+                    break;
+                }
+
+            CanConstruct = namedTypeSymbol.Arity == 0 && hasParameterlessConstructor;
+        }
+        else
+            CanConstruct = false;
 
         var parents = new List<TypeContainer>();
         var parent = symbol;
