@@ -39,9 +39,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 #nullable enable
                 {(!target.IsExact ? "using System.Collections.Frozen;" : "")}
                 using System.Data;
-
-                namespace {target.Namespace};
-
+                {(target.Namespace is null ? "" : $"\nnamespace {target.Namespace};\n")}
                 
                 """
             );

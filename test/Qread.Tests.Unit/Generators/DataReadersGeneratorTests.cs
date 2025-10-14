@@ -587,6 +587,21 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task Namespace_ShouldBeExcluded_WhenItIsGlobalNamespace()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto;
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task NestedObject_ShouldBeGenerated_WhenItHasParameterlessConstructor(
         CancellationToken cancellationToken
     )
