@@ -7,7 +7,7 @@ namespace Qread.Models;
 internal readonly record struct DataReaderGenerationTarget
 {
     public bool IsExact { get; }
-    public string Namespace { get; } = "";
+    public string? Namespace { get; }
     public TypeInternal Type { get; }
 
     private DataReaderGenerationTarget(
@@ -20,7 +20,9 @@ internal readonly record struct DataReaderGenerationTarget
             ? typeInternal!
             : typeCache.CacheType(symbol, new TypeInternal(symbol));
         IsExact = context.GetGenerateDataReaderAttribute()?.GetNamedArg("IsExact")?.Value is true;
-        Namespace = symbol.ContainingNamespace.ToDisplayString();
+        Namespace = symbol.ContainingNamespace.IsGlobalNamespace
+            ? null
+            : symbol.ContainingNamespace.ToDisplayString();
     }
 
     public static bool TryCreate(
