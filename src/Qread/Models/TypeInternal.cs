@@ -14,6 +14,7 @@ internal sealed record TypeInternal
         FullName[FullName.Length - 1] == '?'
             ? FullName.Substring(0, FullName.Length - 1)
             : FullName;
+    public bool GenerateParameterlessConstructor { get; }
     public bool IsEnum { get; }
     public string Name { get; }
     public EquatableArray<Property> Properties { get; private set; }
@@ -35,7 +36,10 @@ internal sealed record TypeInternal
                     break;
                 }
 
-            CanConstruct = namedTypeSymbol.Arity == 0 && hasParameterlessConstructor;
+            if (!hasParameterlessConstructor && namedTypeSymbol.Constructors.Length > 0)
+                GenerateParameterlessConstructor = true;
+
+            CanConstruct = namedTypeSymbol.Arity == 0;
         }
         else
             CanConstruct = false;

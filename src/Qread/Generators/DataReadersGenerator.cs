@@ -44,6 +44,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 """
             );
             StartContainers(target.Type, indentWriter);
+            GenerateParameterlessConstructor(target.Type, indentWriter);
             GenerateFromDataReaderMethod(target.Type, target.IsExact, indentWriter);
             indentWriter.WriteLineNoTabs("");
 
@@ -189,6 +190,18 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
         writer.EndBlock();
     }
 
+    private static void GenerateParameterlessConstructor(
+        TypeInternal type,
+        IndentedTextWriter writer
+    )
+    {
+        if (!type.GenerateParameterlessConstructor)
+            return;
+
+        writer.WriteLine($"private {type.Name}() {{ }}");
+        writer.WriteLineNoTabs("");
+    }
+
     private static void GeneratePropertyIndices(IndentedTextWriter writer)
     {
         writer.WriteLine("var propIndices = new Dictionary<string, int>(reader.FieldCount);");
@@ -212,8 +225,12 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 ? ""
                 : $"!propIndices.TryGetValue($\"{{prefix}}{prop.Name}\", out var index{prop.Name}) ? null : ";
         var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
+        var enumConversion = $"(global::{prop.Type.FullName})";
         return prop.Type.IsEnum
-            ? $"{orNull}(global::{prop.Type.FullName})reader.GetInt32({index})"
+            ? $"{orNull}reader.GetDataTypeName({index}) == \"tinyint\" ? {enumConversion}reader.GetByte({index}) : "
+                + $"reader.GetDataTypeName({index}) == \"smallint\" ? {enumConversion}reader.GetInt16({index}) : "
+                + $"reader.GetDataTypeName({index}) == \"bigint\" ? {enumConversion}reader.GetInt64({index}) : "
+                + $"{enumConversion}reader.GetInt32({index})"
             : prop.DbType switch
             {
                 DbTypeInternal.Bool => $"{orNull}reader.GetBoolean({index})",

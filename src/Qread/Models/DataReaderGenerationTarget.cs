@@ -37,20 +37,8 @@ internal readonly record struct DataReaderGenerationTarget
         if (!IsNamedTypeSymbol(context, typeDeclarationSyntax, out var namedTypeSymbol))
             return false;
 
-        if (!HasParameterlessConstructor(namedTypeSymbol))
-            return false;
-
         target = new DataReaderGenerationTarget(context, namedTypeSymbol, typeCache);
         return true;
-    }
-
-    private static bool HasParameterlessConstructor(INamedTypeSymbol symbol)
-    {
-        foreach (var constructor in symbol.Constructors)
-            if (constructor.Parameters.Length == 0)
-                return true;
-
-        return false;
     }
 
     private static bool IsNamedTypeSymbol(
