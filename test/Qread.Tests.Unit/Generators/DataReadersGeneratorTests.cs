@@ -602,7 +602,7 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
-    public Task NestedObject_ShouldBeGenerated_WhenItHasParameterlessConstructor(
+    public Task NestedObject_ShouldBeGenerated_WhenItHasNoParameterlessConstructor(
         CancellationToken cancellationToken
     )
     {
@@ -622,6 +622,28 @@ public sealed class DataReadersGeneratorTests
             public sealed record Test2Dto
             {
                 public required TestDto Test { get; init; }
+                
+                public Test2Dto(TestDto test) { }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task ParameterlessConstructor_ShouldBeGenerated_WhenOnlyConstructorsWithParametersExist()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader]
+            public sealed partial class TestDto
+            {
+                public TestDto(string parameter) { }
             }
             """;
 
@@ -858,42 +880,6 @@ public sealed class DataReadersGeneratorTests
 
         // Assert.
         return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
-    public async Task Target_ShouldBeSkipped_WhenItHasNoParameterlessConstructor()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader]
-            public sealed partial class TestDto
-            {
-                public TestDto(string value) { }
-            }
-            """;
-        var generator = new DataReadersGenerator();
-        var driver = CSharpGeneratorDriver.Create(generator);
-        var compilation = CSharpCompilation.Create(
-            typeof(DataReadersGeneratorTests).Assembly.FullName,
-            [CSharpSyntaxTree.ParseText(dtoSourceText)],
-            [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)]
-        );
-
-        // Act.
-        var runResult = driver.RunGenerators(compilation).GetRunResult();
-
-        // Assert.
-        await Assert
-            .That(
-                runResult.GeneratedTrees.Where(x =>
-                    x.FilePath.EndsWith("TestNamespace.TestDto.g.cs")
-                )
-            )
-            .IsEmpty();
     }
 
     [Test]

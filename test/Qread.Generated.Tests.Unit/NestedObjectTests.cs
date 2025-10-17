@@ -187,6 +187,12 @@ public sealed partial class NestedObjectTests
     {
         public required DateOnly From { get; init; }
         public required DateOnly To { get; init; }
+
+        public DateRange(DateOnly from, DateOnly to)
+        {
+            From = from;
+            To = to;
+        }
     }
 
     [GenerateDataReader]
