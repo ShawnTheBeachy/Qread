@@ -1,5 +1,6 @@
 ﻿using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Qread.Models;
 using Qread.Sources;
@@ -57,16 +58,19 @@ internal static class Extensions
                 if (prop is not IPropertySymbol propSymbol)
                     continue;
 
-                if (
-                    propSymbol.DeclaredAccessibility != Accessibility.Public
-                    && propSymbol.DeclaredAccessibility != Accessibility.Internal
-                )
-                    continue;
-
                 if (propSymbol.IsReadOnly)
                     continue;
 
                 if (typeSymbol.IsRecord && propSymbol.Name == "EqualityContract")
+                    continue;
+
+                if (
+                    prop.GetAttributes()
+                        .Any(x =>
+                            x.AttributeClass?.ContainingNamespace.Name == "Qread"
+                            && x.AttributeClass?.Name == IgnoreAttribute.Name
+                        )
+                )
                     continue;
 
                 yield return new Property(propSymbol, typeCache);

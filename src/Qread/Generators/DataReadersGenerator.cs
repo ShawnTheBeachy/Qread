@@ -264,7 +264,9 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var typeCache = new TypeCache();
-        context.RegisterPostInitializationOutput(ctx => ctx.AddGenerateDataReaderAttributeSource());
+        context.RegisterPostInitializationOutput(ctx =>
+            ctx.AddGenerateDataReaderAttributeSource().AddIgnoreAttributeSource()
+        );
         var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
             $"{Constants.Namespace}.{GenerateDataReaderAttribute.Name}",
             (node, _) =>

@@ -652,6 +652,66 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task Property_ShouldBeIncluded_WhenItIsInternal()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                internal string Name { get; set; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task Property_ShouldBeIncluded_WhenItIsPrivate()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                private string Name { get; set; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task Property_ShouldBeIncluded_WhenItIsProtected()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                protected string Name { get; set; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task Property_ShouldBeIncluded_WhenItIsPublic()
     {
         // Arrange.
@@ -672,7 +732,7 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
-    public Task Property_ShouldBeSkipped_WhenItIsNotPublic()
+    public Task Property_ShouldBeSkipped_WhenItHasIgnoreAttribute()
     {
         // Arrange.
         const string dtoSourceText = """
@@ -683,7 +743,8 @@ public sealed class DataReadersGeneratorTests
             [GenerateDataReader(IsExact = true)]
             public sealed partial record TestDto
             {
-                private string Name { get; set; }
+                [Ignore]
+                public int IgnoreMe { get; init; }
             }
             """;
 
