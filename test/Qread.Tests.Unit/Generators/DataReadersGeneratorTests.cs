@@ -652,6 +652,66 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task Property_ShouldBeIncluded_WhenItIsInternal()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                internal string Name { get; set; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task Property_ShouldBeIncluded_WhenItIsPrivate()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                private string Name { get; set; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
+    public Task Property_ShouldBeIncluded_WhenItIsProtected()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                protected string Name { get; set; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task Property_ShouldBeIncluded_WhenItIsPublic()
     {
         // Arrange.
@@ -664,26 +724,6 @@ public sealed class DataReadersGeneratorTests
             public sealed partial record TestDto
             {
                 public required string Name { get; init; }
-            }
-            """;
-
-        // Assert.
-        return DataReadersGeneratorHelper.Verify(dtoSourceText);
-    }
-
-    [Test]
-    public Task Property_ShouldBeSkipped_WhenItIsNotPublic()
-    {
-        // Arrange.
-        const string dtoSourceText = """
-            using Qread;
-
-            namespace TestNamespace;
-
-            [GenerateDataReader(IsExact = true)]
-            public sealed partial record TestDto
-            {
-                private string Name { get; set; }
             }
             """;
 

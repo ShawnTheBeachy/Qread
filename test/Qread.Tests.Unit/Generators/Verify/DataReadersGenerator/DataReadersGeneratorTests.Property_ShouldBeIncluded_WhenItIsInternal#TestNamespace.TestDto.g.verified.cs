@@ -12,6 +12,7 @@ partial record TestDto
     {
         var instance = new global::TestNamespace.TestDto
         {
+            Name = reader.GetString(0)
         };
         return instance;
     }

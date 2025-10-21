@@ -57,12 +57,6 @@ internal static class Extensions
                 if (prop is not IPropertySymbol propSymbol)
                     continue;
 
-                if (
-                    propSymbol.DeclaredAccessibility != Accessibility.Public
-                    && propSymbol.DeclaredAccessibility != Accessibility.Internal
-                )
-                    continue;
-
                 if (propSymbol.IsReadOnly)
                     continue;
 
