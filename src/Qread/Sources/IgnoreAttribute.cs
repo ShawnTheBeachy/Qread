@@ -22,7 +22,7 @@ internal static class IgnoreAttribute
 
                 namespace {{Constants.Namespace}};
 
-                [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Struct, AllowMultiple = false)]
+                [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
                 internal sealed class {{Name}} : System.Attribute;
                 
                 """,
