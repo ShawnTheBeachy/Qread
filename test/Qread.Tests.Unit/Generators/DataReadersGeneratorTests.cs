@@ -732,6 +732,27 @@ public sealed class DataReadersGeneratorTests
     }
 
     [Test]
+    public Task Property_ShouldBeSkipped_WhenItHasIgnoreAttribute()
+    {
+        // Arrange.
+        const string dtoSourceText = """
+            using Qread;
+
+            namespace TestNamespace;
+
+            [GenerateDataReader(IsExact = true)]
+            public sealed partial record TestDto
+            {
+                [Ignore]
+                public int IgnoreMe { get; init; }
+            }
+            """;
+
+        // Assert.
+        return DataReadersGeneratorHelper.Verify(dtoSourceText);
+    }
+
+    [Test]
     public Task Property_ShouldBeSkipped_WhenItIsReadOnly()
     {
         // Arrange.
