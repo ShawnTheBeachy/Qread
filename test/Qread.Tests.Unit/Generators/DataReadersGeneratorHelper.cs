@@ -24,6 +24,8 @@ internal static class DataReadersGeneratorHelper
         verifySettings.UseDirectory("Verify/DataReadersGenerator");
         return Verifier
             .Verify(driver, verifySettings)
-            .IgnoreGeneratedResult(result => result.HintName == "GenerateDataReaderAttribute.g.cs");
+            .IgnoreGeneratedResult(result =>
+                result.HintName is "GenerateDataReaderAttribute.g.cs" or "IgnoreAttribute.g.cs"
+            );
     }
 }
