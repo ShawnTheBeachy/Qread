@@ -1,16 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <UseAppHost>false</UseAppHost>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <GenerateQreadStandardClasses>false</GenerateQreadStandardClasses>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TestingPlatformCommandLineArguments>--crashdump --hangdump</TestingPlatformCommandLineArguments>
+    </PropertyGroup>
+
     <ItemGroup>
+        <PackageReference Include="Microsoft.Testing.Extensions.CrashDump" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Testing.Extensions.HangDump" Version="2.1.0" />
         <PackageReference Include="NSubstitute" Version="5.3.0"/>
-        <PackageReference Include="TUnit" Version="0.61.13" />
+        <PackageReference Include="TUnit" Version="1.19.74" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,5 +32,4 @@
                           ReferenceOutputAssembly="false"
                           OutputItemType="Analyzer"/>
     </ItemGroup>
-
 </Project>

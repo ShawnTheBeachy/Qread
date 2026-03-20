@@ -45,7 +45,7 @@ public sealed partial class ExactTests
 
         // Assert.
         using var asserts = Assert.Multiple();
-        await Assert.That(teamMembers).HasCount().EqualTo(4);
+        await Assert.That(teamMembers.Count).IsEqualTo(4);
 
         await Assert
             .That(teamMembers[0].Id)
