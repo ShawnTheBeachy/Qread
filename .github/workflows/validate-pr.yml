@@ -36,7 +36,7 @@ jobs:
         run: dotnet build --configuration Debug --no-restore
       - name: Test
         run: |
-          dotnet test --coverage --coverage-output-format cobertura --crashdump --hangdump
+          dotnet test
       - name: Generate code coverage report
         run: |
           dotnet tool install -g dotnet-reportgenerator-globaltool
