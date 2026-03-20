@@ -14,7 +14,8 @@ public sealed partial class MyService
 {
   public async Task<IReadOnlyList<Record>> GetRecords()
   {
-    // Get an IDataReader...
+    // Get an IDataReader.
+
     var dtos = MyDto.ListFromDataReader(dataReader);
 
     // Alternatively, use MyDto.FromDataReader(dataReader) to get a single MyDto.
