@@ -1030,16 +1030,16 @@ public sealed class DataReadersGeneratorTests
                     x.FilePath.EndsWith("TestNamespace.ParentA.TestDto.g.cs")
                 )
             )
-            .HasCount()
-            .EqualToOne();
+            .Count()
+            .IsEqualTo(1);
         await Assert
             .That(
                 runResult.GeneratedTrees.Where(x =>
                     x.FilePath.EndsWith("TestNamespace.ParentB.TestDto.g.cs")
                 )
             )
-            .HasCount()
-            .EqualToOne();
+            .Count()
+            .IsEqualTo(1);
     }
 
     [Test]

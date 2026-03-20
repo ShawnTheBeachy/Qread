@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '9.x' ]
+        dotnet-version: [ '10.x' ]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -31,12 +31,12 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: ${{ runner.os }}-nuget
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore /p:HUSKY=0
       - name: Build
         run: dotnet build --configuration Debug --no-restore
       - name: Test
         run: |
-          dotnet exec test/Qread.Tests.Unit/bin/Debug/net9.0/Qread.Tests.Unit.dll --coverage --coverage-output-format cobertura --crashdump --hangdump
+          dotnet test --coverage --coverage-output-format cobertura --crashdump --hangdump
       - name: Generate code coverage report
         run: |
           dotnet tool install -g dotnet-reportgenerator-globaltool

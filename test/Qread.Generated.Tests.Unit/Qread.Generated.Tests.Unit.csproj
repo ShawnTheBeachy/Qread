@@ -1,16 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <UseAppHost>false</UseAppHost>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <TestingPlatformCommandLineArguments>
+            --coverage --coverage-output-format cobertura --crashdump --hangdump
+        </TestingPlatformCommandLineArguments>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="NSubstitute" Version="5.3.0"/>
-        <PackageReference Include="TUnit" Version="0.61.13" />
+        <PackageReference Include="TUnit" Version="1.19.74" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,5 +28,4 @@
                           ReferenceOutputAssembly="false"
                           OutputItemType="Analyzer"/>
     </ItemGroup>
-
 </Project>
