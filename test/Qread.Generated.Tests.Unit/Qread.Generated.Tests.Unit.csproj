@@ -9,10 +9,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <GenerateQreadStandardClasses>false</GenerateQreadStandardClasses>
-    </PropertyGroup>
-
-    <PropertyGroup>
         <TestingPlatformCommandLineArguments>--crashdump --hangdump</TestingPlatformCommandLineArguments>
     </PropertyGroup>
 
