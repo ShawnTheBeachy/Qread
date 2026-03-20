@@ -14,7 +14,7 @@
 
     <PropertyGroup>
         <TestingPlatformCommandLineArguments>
-            --coverage --coverage-output-format cobertura --crashdump --hangdump
+            ---crashdump --hangdump
         </TestingPlatformCommandLineArguments>
     </PropertyGroup>
 
