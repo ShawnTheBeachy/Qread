@@ -12,8 +12,8 @@ partial record TestDto
     {
         var instance = new global::TestNamespace.TestDto
         {
-            Value = reader.IsDBNull(0) ? null : reader.GetDouble(0),
-            Value2 = reader.IsDBNull(1) ? null : reader.GetDouble(1)
+            Value = reader.IsDBNull(0) ? null : global::Qread.TypeReaders.TryGetReader<double>(out var readerValue) ? readerValue.Read(reader, 0) : reader.GetDouble(0),
+            Value2 = reader.IsDBNull(1) ? null : global::Qread.TypeReaders.TryGetReader<Double>(out var readerValue2) ? readerValue2.Read(reader, 1) : reader.GetDouble(1)
         };
         return instance;
     }

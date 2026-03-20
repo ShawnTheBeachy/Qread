@@ -225,6 +225,8 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 ? ""
                 : $"!propIndices.TryGetValue($\"{{prefix}}{prop.Name}\", out var index{prop.Name}) ? null : ";
         var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
+        var tryReader =
+            $"global::{Constants.Namespace}.TypeReaders.TryGetReader<{prop.Type.FullNameIgnoreNullable}>(out var reader{prop.Name}) ? reader{prop.Name}.Read(reader, {index}) : ";
         var enumConversion = $"(global::{prop.Type.FullName})";
         return prop.Type.IsEnum
             ? $"{orNull}reader.GetDataTypeName({index}) == \"tinyint\" ? {enumConversion}reader.GetByte({index}) : "
@@ -233,26 +235,26 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 + $"{enumConversion}reader.GetInt32({index})"
             : prop.DbType switch
             {
-                DbTypeInternal.Bool => $"{orNull}reader.GetBoolean({index})",
+                DbTypeInternal.Bool => $"{orNull}{tryReader}reader.GetBoolean({index})",
                 DbTypeInternal.Byte =>
                     $"{orNull}{(prop.IsArray ? $"(byte[])reader.GetValue({index})" : $"reader.GetByte({index})")}",
-                DbTypeInternal.Char => $"{orNull}reader.GetChar({index})",
+                DbTypeInternal.Char => $"{orNull}{tryReader}reader.GetChar({index})",
                 DbTypeInternal.DateOnly =>
-                    $"{orNull}DateOnly.FromDateTime(reader.GetDateTime({index}))",
-                DbTypeInternal.DateTime => $"{orNull}reader.GetDateTime({index})",
+                    $"{orNull}{tryReader}DateOnly.FromDateTime(reader.GetDateTime({index}))",
+                DbTypeInternal.DateTime => $"{orNull}{tryReader}reader.GetDateTime({index})",
                 DbTypeInternal.DateTimeOffset =>
-                    $"{orNull}(DateTimeOffset)reader.GetValue({index})",
-                DbTypeInternal.Decimal => $"{orNull}reader.GetDecimal({index})",
-                DbTypeInternal.Double => $"{orNull}reader.GetDouble({index})",
-                DbTypeInternal.Single => $"{orNull}reader.GetFloat({index})",
-                DbTypeInternal.Guid => $"{orNull}reader.GetGuid({index})",
-                DbTypeInternal.Int16 => $"{orNull}reader.GetInt16({index})",
-                DbTypeInternal.Int32 => $"{orNull}reader.GetInt32({index})",
-                DbTypeInternal.Int64 => $"{orNull}reader.GetInt64({index})",
-                DbTypeInternal.String => $"{orNull}reader.GetString({index})",
-                DbTypeInternal.TimeSpan => $"{orNull}(TimeSpan)reader.GetValue({index})",
+                    $"{orNull}{tryReader}(DateTimeOffset)reader.GetValue({index})",
+                DbTypeInternal.Decimal => $"{orNull}{tryReader}reader.GetDecimal({index})",
+                DbTypeInternal.Double => $"{orNull}{tryReader}reader.GetDouble({index})",
+                DbTypeInternal.Single => $"{orNull}{tryReader}reader.GetFloat({index})",
+                DbTypeInternal.Guid => $"{orNull}{tryReader}reader.GetGuid({index})",
+                DbTypeInternal.Int16 => $"{orNull}{tryReader}reader.GetInt16({index})",
+                DbTypeInternal.Int32 => $"{orNull}{tryReader}reader.GetInt32({index})",
+                DbTypeInternal.Int64 => $"{orNull}{tryReader}reader.GetInt64({index})",
+                DbTypeInternal.String => $"{orNull}{tryReader}reader.GetString({index})",
+                DbTypeInternal.TimeSpan => $"{orNull}{tryReader}(TimeSpan)reader.GetValue({index})",
                 _ => isExact || !prop.Type.CanConstruct
-                    ? $"true ? throw new Exception(\"Unknown type {prop.Type.FullName}.\") : default"
+                    ? $"{tryReader} throw new Exception(\"Unknown type {prop.Type.FullName}.\")"
                     : $$"""
                         global::{{prop.Type.FullNameIgnoreNullable}}.FromDataReader(reader, propIndices, $"{prefix}{{prop.Name}}_"){{(
                             prop.IsNullable ? "" : "!"
@@ -265,7 +267,9 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     {
         var typeCache = new TypeCache();
         context.RegisterPostInitializationOutput(ctx =>
-            ctx.AddGenerateDataReaderAttributeSource().AddIgnoreAttributeSource()
+            ctx.AddTypeReadersSource()
+                .AddGenerateDataReaderAttributeSource()
+                .AddIgnoreAttributeSource()
         );
         var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
             $"{Constants.Namespace}.{GenerateDataReaderAttribute.Name}",

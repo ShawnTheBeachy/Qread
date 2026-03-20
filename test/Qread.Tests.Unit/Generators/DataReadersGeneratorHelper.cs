@@ -25,7 +25,12 @@ internal static class DataReadersGeneratorHelper
         return Verifier
             .Verify(driver, verifySettings)
             .IgnoreGeneratedResult(result =>
-                result.HintName is "GenerateDataReaderAttribute.g.cs" or "IgnoreAttribute.g.cs"
+                result.HintName
+                    is "GenerateDataReaderAttribute.g.cs"
+                        or "IgnoreAttribute.g.cs"
+                        or "ITypeReader.g.cs"
+                        or "TypeReader.g.cs"
+                        or "TypeReaders.g.cs"
             );
     }
 }

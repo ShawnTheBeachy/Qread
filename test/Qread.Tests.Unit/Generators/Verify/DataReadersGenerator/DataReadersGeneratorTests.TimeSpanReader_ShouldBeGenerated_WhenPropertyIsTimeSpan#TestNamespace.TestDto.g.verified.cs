@@ -12,7 +12,7 @@ partial record TestDto
     {
         var instance = new global::TestNamespace.TestDto
         {
-            Duration = (TimeSpan)reader.GetValue(0)
+            Duration = global::Qread.TypeReaders.TryGetReader<TimeSpan>(out var readerDuration) ? readerDuration.Read(reader, 0) : (TimeSpan)reader.GetValue(0)
         };
         return instance;
     }

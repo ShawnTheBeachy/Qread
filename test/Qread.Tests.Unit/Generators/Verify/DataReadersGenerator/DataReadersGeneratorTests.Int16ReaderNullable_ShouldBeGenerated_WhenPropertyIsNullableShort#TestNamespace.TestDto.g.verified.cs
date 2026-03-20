@@ -12,8 +12,8 @@ partial record TestDto
     {
         var instance = new global::TestNamespace.TestDto
         {
-            Count = reader.IsDBNull(0) ? null : reader.GetInt16(0),
-            Count2 = reader.IsDBNull(1) ? null : reader.GetInt16(1)
+            Count = reader.IsDBNull(0) ? null : global::Qread.TypeReaders.TryGetReader<short>(out var readerCount) ? readerCount.Read(reader, 0) : reader.GetInt16(0),
+            Count2 = reader.IsDBNull(1) ? null : global::Qread.TypeReaders.TryGetReader<Int16>(out var readerCount2) ? readerCount2.Read(reader, 1) : reader.GetInt16(1)
         };
         return instance;
     }

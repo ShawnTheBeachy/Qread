@@ -12,7 +12,7 @@ partial record TestDto
     {
         var instance = new global::TestNamespace.TestDto
         {
-            Name = reader.GetString(0)
+            Name = global::Qread.TypeReaders.TryGetReader<string>(out var readerName) ? readerName.Read(reader, 0) : reader.GetString(0)
         };
         return instance;
     }

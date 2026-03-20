@@ -12,7 +12,7 @@ partial record TestDto
     {
         var instance = new global::TestNamespace.TestDto
         {
-            DateOfBirth = reader.IsDBNull(0) ? null : (DateTimeOffset)reader.GetValue(0)
+            DateOfBirth = reader.IsDBNull(0) ? null : global::Qread.TypeReaders.TryGetReader<DateTimeOffset>(out var readerDateOfBirth) ? readerDateOfBirth.Read(reader, 0) : (DateTimeOffset)reader.GetValue(0)
         };
         return instance;
     }

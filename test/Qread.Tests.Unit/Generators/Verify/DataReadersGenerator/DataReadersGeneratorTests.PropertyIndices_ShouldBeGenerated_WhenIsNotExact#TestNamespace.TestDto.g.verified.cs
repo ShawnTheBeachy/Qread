@@ -29,8 +29,8 @@ partial record TestDto
 
         var instance = new global::TestNamespace.TestDto
         {
-            FirstName = reader.GetString(propIndices[$"{prefix}FirstName"]),
-            LastName = !propIndices.TryGetValue($"{prefix}LastName", out var indexLastName) ? null : reader.IsDBNull(indexLastName) ? null : reader.GetString(indexLastName)
+            FirstName = global::Qread.TypeReaders.TryGetReader<string>(out var readerFirstName) ? readerFirstName.Read(reader, propIndices[$"{prefix}FirstName"]) : reader.GetString(propIndices[$"{prefix}FirstName"]),
+            LastName = !propIndices.TryGetValue($"{prefix}LastName", out var indexLastName) ? null : reader.IsDBNull(indexLastName) ? null : global::Qread.TypeReaders.TryGetReader<string>(out var readerLastName) ? readerLastName.Read(reader, indexLastName) : reader.GetString(indexLastName)
         };
         return instance;
     }
