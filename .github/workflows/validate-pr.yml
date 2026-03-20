@@ -37,17 +37,6 @@ jobs:
       - name: Test
         run: |
           dotnet test
-      - name: Generate code coverage report
-        run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          reportgenerator -reports:"test/**/TestResults/**/*.cobertura.xml" -targetdir:"test/coverage-report" -filefilters:"-*.g.cs" -assemblyfilters:"-Qread*.Tests.*"
-      - name: Upload code coverage report
-        uses: actions/upload-artifact@v4
-        if: '!cancelled()'
-        with:
-          name: coverage-report
-          path: test/coverage-report/
-          retention-days: 1
     env:
       DescribeTests: false
       TESTINGPLATFORM_TELEMETRY_OPTOUT: true
