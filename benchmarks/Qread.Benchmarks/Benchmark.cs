@@ -5,7 +5,7 @@ using Qread.Benchmarks.Internals;
 
 namespace Qread.Benchmarks;
 
-[SimpleJob(RuntimeMoniker.Net90)]
+[SimpleJob(RuntimeMoniker.Net10_0)]
 [MemoryDiagnoser]
 public class Benchmark
 {
