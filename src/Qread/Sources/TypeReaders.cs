@@ -70,13 +70,14 @@ internal static class TypeReaders
 
                 #if !QREAD_EXCLUDE_STD_CLASSES
 
+                using System.Collections.Concurrent;
                 using System.Diagnostics.CodeAnalysis;
 
                 namespace {{Constants.Namespace}};
 
                 public static class TypeReaders
                 {
-                    private static readonly Dictionary<Type, ITypeReader> _readers = [];
+                    private static readonly ConcurrentDictionary<Type, ITypeReader> _readers = [];
                     
                     public static void AddReader<T>(TypeReader<T> reader) =>
                         _readers[typeof(T)] = reader;
