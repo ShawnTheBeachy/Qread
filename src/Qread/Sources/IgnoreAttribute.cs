@@ -25,7 +25,7 @@ internal static class IgnoreAttribute
                 namespace {Constants.Namespace};
 
                 [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-                internal sealed class {Name} : System.Attribute;
+                public sealed class {Name} : System.Attribute;
 
                 #endif
                 
