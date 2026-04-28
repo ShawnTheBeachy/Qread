@@ -25,7 +25,7 @@ internal static class GenerateDataReaderAttribute
                 namespace {{Constants.Namespace}};
 
                 [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Struct, AllowMultiple = false)]
-                internal sealed class {{Name}} : System.Attribute
+                public sealed class {{Name}} : System.Attribute
                 {
                     public bool IsExact { get; set; }
                 }
