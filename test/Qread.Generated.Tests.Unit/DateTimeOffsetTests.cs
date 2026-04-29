@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -10,12 +9,12 @@ public sealed partial class DateTimeOffsetTests
     {
         // Arrange.
         var date = new DateTimeOffset(2022, 2, 18, 21, 0, 0, TimeSpan.FromHours(-4));
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(0).Returns(true);
         dataReader.GetValue(1).Returns(date);
 
         // Act.
-        var sut = ProjectedCompletions.FromDataReader(dataReader);
+        var sut = ProjectedCompletions.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Tumwater).IsEqualTo(date);
@@ -25,12 +24,12 @@ public sealed partial class DateTimeOffsetTests
     public async Task NullableDateTimeOffset_ShouldBeSetToNull_WhenColumnIsNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(0).Returns(true);
         dataReader.GetValue(1).Returns(default(DateTimeOffset));
 
         // Act.
-        var sut = ProjectedCompletions.FromDataReader(dataReader);
+        var sut = ProjectedCompletions.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.ColdHarbor).IsNull();
@@ -41,13 +40,13 @@ public sealed partial class DateTimeOffsetTests
     {
         // Arrange.
         var date = new DateTimeOffset(2025, 3, 20, 21, 0, 0, TimeSpan.FromHours(-4));
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(0).Returns(false);
         dataReader.GetValue(0).Returns(date);
         dataReader.GetValue(1).Returns(default(DateTimeOffset));
 
         // Act.
-        var sut = ProjectedCompletions.FromDataReader(dataReader);
+        var sut = ProjectedCompletions.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.ColdHarbor).IsEqualTo(date);

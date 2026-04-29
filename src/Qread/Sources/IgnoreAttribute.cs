@@ -28,7 +28,7 @@ internal static class IgnoreAttribute
                 public sealed class {Name} : System.Attribute;
 
                 #endif
-                
+
                 """,
                 Encoding.UTF8
             )

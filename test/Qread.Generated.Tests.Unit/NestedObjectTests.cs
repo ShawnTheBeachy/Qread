@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -11,8 +10,8 @@ public sealed partial class NestedObjectTests
     )
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
-        dataReader.FieldCount.Returns(3);
+        var dataReader = IDataReader.Imposter();
+        dataReader.FieldCount.Getter().Returns(3);
         const string employeeName = "Mark Scout";
         dataReader.GetString(0).Returns(employeeName);
         dataReader.GetName(0).Returns("Employee_Name");
@@ -21,10 +20,10 @@ public sealed partial class NestedObjectTests
         dataReader.GetName(1).Returns("Employee_Spouse_Name");
         dataReader.IsDBNull(2).Returns(true);
         dataReader.GetName(2).Returns("Metadata_Reviewer_Name");
-        dataReader.Read().Returns(true, false);
+        dataReader.Read().Returns(true).Then().Returns(false);
 
         // Act.
-        var sut = PerformanceReview.FromDataReader(dataReader);
+        var sut = PerformanceReview.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Metadata).IsNull();
@@ -36,8 +35,8 @@ public sealed partial class NestedObjectTests
     )
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
-        dataReader.FieldCount.Returns(3);
+        var dataReader = IDataReader.Imposter();
+        dataReader.FieldCount.Getter().Returns(3);
         const string employeeName = "Mark Scout";
         dataReader.GetString(0).Returns(employeeName);
         dataReader.GetName(0).Returns("Employee_Name");
@@ -46,10 +45,10 @@ public sealed partial class NestedObjectTests
         dataReader.GetName(1).Returns("Employee_Spouse_Name");
         dataReader.GetDateTime(2).Returns(new DateTime(2025, 9, 22));
         dataReader.GetName(2).Returns("DateRange_To");
-        dataReader.Read().Returns(true, false);
+        dataReader.Read().Returns(true).Then().Returns(false);
 
         // Act.
-        var sut = PerformanceReview.FromDataReader(dataReader);
+        var sut = PerformanceReview.FromDataReader(dataReader.Instance());
 
         // Assert.
         using var asserts = Assert.Multiple();
@@ -62,8 +61,8 @@ public sealed partial class NestedObjectTests
     )
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
-        dataReader.FieldCount.Returns(4);
+        var dataReader = IDataReader.Imposter();
+        dataReader.FieldCount.Getter().Returns(4);
         const string employeeName = "Mark Scout";
         dataReader.GetString(0).Returns(employeeName);
         dataReader.GetName(0).Returns("Employee_Name");
@@ -74,10 +73,10 @@ public sealed partial class NestedObjectTests
         dataReader.GetName(2).Returns("DateRange_From");
         dataReader.GetDateTime(3).Returns(new DateTime(2025, 9, 22));
         dataReader.GetName(3).Returns("DateRange_To");
-        dataReader.Read().Returns(true, false);
+        dataReader.Read().Returns(true).Then().Returns(false);
 
         // Act.
-        var sut = PerformanceReview.FromDataReader(dataReader);
+        var sut = PerformanceReview.FromDataReader(dataReader.Instance());
 
         // Assert.
         using var asserts = Assert.Multiple();
@@ -90,8 +89,8 @@ public sealed partial class NestedObjectTests
     )
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
-        dataReader.FieldCount.Returns(3);
+        var dataReader = IDataReader.Imposter();
+        dataReader.FieldCount.Getter().Returns(3);
         const string employeeName = "Mark Scout";
         dataReader.GetString(0).Returns(employeeName);
         dataReader.GetName(0).Returns("Employee_Name");
@@ -101,10 +100,10 @@ public sealed partial class NestedObjectTests
         const string projectName = "Cold Harbor";
         dataReader.GetString(2).Returns(projectName);
         dataReader.GetName(2).Returns("Employee_CurrentProject_Name");
-        dataReader.Read().Returns(true, false);
+        dataReader.Read().Returns(true).Then().Returns(false);
 
         // Act.
-        var sut = PerformanceReview.FromDataReader(dataReader);
+        var sut = PerformanceReview.FromDataReader(dataReader.Instance());
 
         // Assert.
         using var asserts = Assert.Multiple();
@@ -121,8 +120,8 @@ public sealed partial class NestedObjectTests
     )
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
-        dataReader.FieldCount.Returns(4);
+        var dataReader = IDataReader.Imposter();
+        dataReader.FieldCount.Getter().Returns(4);
         const string employeeName = "Mark Scout";
         dataReader.GetString(0).Returns(employeeName);
         dataReader.GetName(0).Returns("Employee_Name");
@@ -134,10 +133,10 @@ public sealed partial class NestedObjectTests
         dataReader.GetName(2).Returns("Employee_CurrentProject_Name");
         dataReader.IsDBNull(3).Returns(true);
         dataReader.GetName(3).Returns("Employee_CurrentProject_EstimatedCompletion");
-        dataReader.Read().Returns(true, false);
+        dataReader.Read().Returns(true).Then().Returns(false);
 
         // Act.
-        var sut = PerformanceReview.FromDataReader(dataReader);
+        var sut = PerformanceReview.FromDataReader(dataReader.Instance());
 
         // Assert.
         using var asserts = Assert.Multiple();
@@ -154,8 +153,8 @@ public sealed partial class NestedObjectTests
     )
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
-        dataReader.FieldCount.Returns(3);
+        var dataReader = IDataReader.Imposter();
+        dataReader.FieldCount.Getter().Returns(3);
         const string employeeName = "Mark Scout";
         dataReader.GetString(0).Returns(employeeName);
         dataReader.GetName(0).Returns("Employee_Name");
@@ -165,10 +164,10 @@ public sealed partial class NestedObjectTests
         const string reviewerName = "Harmony Cobel";
         dataReader.GetString(2).Returns(reviewerName);
         dataReader.GetName(2).Returns("Metadata_Reviewer_Name");
-        dataReader.Read().Returns(true, false);
+        dataReader.Read().Returns(true).Then().Returns(false);
 
         // Act.
-        var sut = PerformanceReview.FromDataReader(dataReader);
+        var sut = PerformanceReview.FromDataReader(dataReader.Instance());
 
         // Assert.
         using var asserts = Assert.Multiple();

@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -11,31 +10,56 @@ public sealed partial class InexactTests
     )
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
-        dataReader.FieldCount.Returns(3);
-        dataReader.Read().Returns(true, true, true, true, false);
+        var dataReader = IDataReader.Imposter();
+        dataReader.FieldCount.Getter().Returns(3);
+        dataReader
+            .Read()
+            .Returns(true)
+            .Then()
+            .Returns(true)
+            .Then()
+            .Returns(true)
+            .Then()
+            .Returns(true)
+            .Then()
+            .Returns(false);
         dataReader.GetName(0).Returns(nameof(TeamMember.Name));
         dataReader.GetName(1).Returns(nameof(TeamMember.Sex));
         dataReader.GetName(2).Returns(nameof(TeamMember.Id));
-        dataReader.GetString(0).Returns("Dylan G.", "Helly R.", "Irving B.", "Mark S.");
+        dataReader
+            .GetString(0)
+            .Returns("Dylan G.")
+            .Then()
+            .Returns("Helly R.")
+            .Then()
+            .Returns("Irving B.")
+            .Then()
+            .Returns("Mark S.");
         dataReader
             .GetInt32(1)
-            .Returns((int)Sex.Male, (int)Sex.Female, (int)Sex.Male, (int)Sex.Male);
+            .Returns((int)Sex.Male)
+            .Then()
+            .Returns((int)Sex.Female)
+            .Then()
+            .Returns((int)Sex.Male)
+            .Then()
+            .Returns((int)Sex.Male);
         dataReader
             .GetGuid(2)
-            .Returns(
-                Guid.Parse("59c35e39-0c32-4244-8817-d2598f688de2"),
-                Guid.Parse("a499056c-e0e7-4081-a476-13454445ba13"),
-                Guid.Parse("157d25ea-5e4e-4a28-800a-6c2d3e8b75b0"),
-                Guid.Parse("d6073fa0-47c4-45d0-8c7e-9666ba3f16a8")
-            );
+            .Returns(Guid.Parse("59c35e39-0c32-4244-8817-d2598f688de2"))
+            .Then()
+            .Returns(Guid.Parse("a499056c-e0e7-4081-a476-13454445ba13"))
+            .Then()
+            .Returns(Guid.Parse("157d25ea-5e4e-4a28-800a-6c2d3e8b75b0"))
+            .Then()
+            .Returns(Guid.Parse("d6073fa0-47c4-45d0-8c7e-9666ba3f16a8"));
 
         // Act.
         var teamMembers = new List<TeamMember>();
 
         await foreach (
             var teamMember in TeamMember.AsyncEnumerableFromDataReader(
-                dataReader,
+                dataReader.Instance(),
                 cancellationToken
             )
         )

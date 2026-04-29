@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -9,11 +8,11 @@ public sealed partial class ByteTests
     public async Task NotNullableByte_ShouldBeSet()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.GetByte(0).Returns((byte)37);
 
         // Act.
-        var sut = Numbers.FromDataReader(dataReader);
+        var sut = Numbers.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Set1).IsEqualTo((byte)37);
@@ -23,11 +22,11 @@ public sealed partial class ByteTests
     public async Task NullableByte_ShouldBeSetToNull_WhenColumnIsNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(1).Returns(true);
 
         // Act.
-        var sut = Numbers.FromDataReader(dataReader);
+        var sut = Numbers.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Set2).IsNull();
@@ -37,12 +36,12 @@ public sealed partial class ByteTests
     public async Task NullableByte_ShouldBeSetToValue_WhenColumnIsNotNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(1).Returns(false);
         dataReader.GetByte(1).Returns((byte)26);
 
         // Act.
-        var sut = Numbers.FromDataReader(dataReader);
+        var sut = Numbers.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Set2).IsEqualTo((byte)26);

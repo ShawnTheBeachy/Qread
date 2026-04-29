@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -9,11 +8,11 @@ public sealed partial class BooleanTests
     public async Task NotNullableBoolean_ShouldBeSet()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.GetBoolean(1).Returns(true);
 
         // Act.
-        var sut = OrtboParticipation.FromDataReader(dataReader);
+        var sut = OrtboParticipation.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Irving).IsTrue();
@@ -23,11 +22,11 @@ public sealed partial class BooleanTests
     public async Task NullableBoolean_ShouldBeSetToNull_WhenColumnIsNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(0).Returns(true);
 
         // Act.
-        var sut = OrtboParticipation.FromDataReader(dataReader);
+        var sut = OrtboParticipation.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Helly).IsNull();
@@ -37,12 +36,12 @@ public sealed partial class BooleanTests
     public async Task NullableBoolean_ShouldBeSetToValue_WhenColumnIsNotNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(0).Returns(false);
         dataReader.GetBoolean(0).Returns(false);
 
         // Act.
-        var sut = OrtboParticipation.FromDataReader(dataReader);
+        var sut = OrtboParticipation.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Helly).IsFalse();

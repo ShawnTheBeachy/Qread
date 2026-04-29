@@ -1,62 +1,103 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <IsRoslynComponent>true</IsRoslynComponent>
-        <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
-        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <DebugType>embedded</DebugType>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <Deterministic>true</Deterministic>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>$(NoWarn);CS1591</NoWarn>
-        <EnablePackageValidation>true</EnablePackageValidation>
-        <PackageId>asdfDEV.Qread</PackageId>
-        <Authors>ShawnSeanShaun</Authors>
-        <Company>asdfDEV</Company>
-        <PackageDescription>Blazing fast DataReader to POCO mapping.</PackageDescription>
-        <RepositoryUrl>https://github.com/ShawnTheBeachy/qread</RepositoryUrl>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <PackageProjectUrl>https://github.com/ShawnTheBeachy/qread</PackageProjectUrl>
-        <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
-        <PackageTags>.net;datareader;</PackageTags>
-        <PackageIcon>assets/nuget-package-icon.png</PackageIcon>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <MinVerTagPrefix>v</MinVerTagPrefix>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <DebugType>embedded</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageId>asdfDEV.Qread</PackageId>
+    <Authors>ShawnSeanShaun</Authors>
+    <Company>asdfDEV</Company>
+    <PackageDescription>Blazing fast DataReader to POCO mapping.</PackageDescription>
+    <RepositoryUrl>https://github.com/ShawnTheBeachy/qread</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageProjectUrl>https://github.com/ShawnTheBeachy/qread</PackageProjectUrl>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <PackageTags>.net;datareader;</PackageTags>
+    <PackageIcon>assets/nuget-package-icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+  </PropertyGroup>
 
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    </PropertyGroup>
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
-        <PackageReference Include="MinVer" Version="7.0.0">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <PackageReference Include="MinVer" Version="7.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <None
+      Include="$(OutputPath)\$(AssemblyName).dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
+  </ItemGroup>
 
-    <ItemGroup>
-        <Content Include="..\..\README.md">
-            <Link>.nuget\%(FileName)%(Extension)</Link>
-            <Pack>true</Pack>
-            <PackagePath>README.md</PackagePath>
-        </Content>
-        <Content Include="..\..\assets\nuget-package-icon.png">
-            <Link>.nuget\%(FileName)%(Extension)</Link>
-            <Pack>true</Pack>
-            <PackagePath>/assets/nuget-package-icon.png</PackagePath>
-        </Content>
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\README.md">
+      <Link>.nuget\%(FileName)%(Extension)</Link>
+      <Pack>true</Pack>
+      <PackagePath>README.md</PackagePath>
+    </Content>
+    <Content Include="..\..\assets\nuget-package-icon.png">
+      <Link>.nuget\%(FileName)%(Extension)</Link>
+      <Pack>true</Pack>
+      <PackagePath>/assets/nuget-package-icon.png</PackagePath>
+    </Content>
+  </ItemGroup>
 
-    <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">
-        <Exec Command="dotnet tool restore" StandardOutputImportance="Low" StandardErrorImportance="High"/>
-        <Exec Command="dotnet husky install" StandardOutputImportance="Low" StandardErrorImportance="High" WorkingDirectory="..\.."/>
-    </Target>
+  <ItemGroup>
+    <!-- Pack the generator dll in the analyzers/dotnet/cs path -->
+    <None
+      Include="$(OutputPath)\$(AssemblyName).dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
+
+    <!-- Pack the attributes dll in the analyzers/dotnet/cs path -->
+    <None
+      Include="$(OutputPath)\Qread.Attributes.dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
+
+    <!-- Pack the attributes dll in the lib\netstandard2.0 path -->
+    <None
+      Include="$(OutputPath)\Qread.Attributes.dll"
+      Pack="true"
+      PackagePath="lib\netstandard2.0"
+      Visible="true"
+    />
+  </ItemGroup>
+
+  <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">
+    <Exec
+      Command="dotnet tool restore"
+      StandardOutputImportance="Low"
+      StandardErrorImportance="High"
+    />
+    <Exec
+      Command="dotnet husky install"
+      StandardOutputImportance="Low"
+      StandardErrorImportance="High"
+      WorkingDirectory="..\.."
+    />
+  </Target>
 </Project>
