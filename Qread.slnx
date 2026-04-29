@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Qread.Benchmarks/Qread.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Qread/Qread.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Qread.Generated.Tests.Unit/Qread.Generated.Tests.Unit.csproj" />
+    <Project Path="test/Qread.Tests.Unit/Qread.Tests.Unit.csproj" />
+  </Folder>
+</Solution>
