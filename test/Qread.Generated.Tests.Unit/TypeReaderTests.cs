@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -10,13 +9,13 @@ public sealed partial class TypeReaderTests
     {
         // Arrange.
         const string value = "Value";
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.GetString(0).Returns(value);
 
         TypeReaders.AddReader(new StringWrapperReader());
 
         // Act.
-        var sut = Record.FromDataReader(dataReader);
+        var sut = Record.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Wrapper.Value).IsEqualTo(value);

@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -9,11 +8,11 @@ public sealed partial class Int16Tests
     public async Task NotNullableInt16_ShouldBeSet()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.GetInt16(0).Returns((short)13);
 
         // Act.
-        var sut = PerksEarned.FromDataReader(dataReader);
+        var sut = PerksEarned.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.AllTime).IsEqualTo((short)13);
@@ -23,11 +22,11 @@ public sealed partial class Int16Tests
     public async Task NullableInt16_ShouldBeSetToNull_WhenColumnIsNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(1).Returns(true);
 
         // Act.
-        var sut = PerksEarned.FromDataReader(dataReader);
+        var sut = PerksEarned.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.ThisQuarter).IsNull();
@@ -37,12 +36,12 @@ public sealed partial class Int16Tests
     public async Task NullableInt16_ShouldBeSetToValue_WhenColumnIsNotNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(1).Returns(false);
         dataReader.GetInt16(1).Returns((short)2);
 
         // Act.
-        var sut = PerksEarned.FromDataReader(dataReader);
+        var sut = PerksEarned.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.ThisQuarter).IsEqualTo((short)2);

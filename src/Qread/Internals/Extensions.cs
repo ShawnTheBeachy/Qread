@@ -22,7 +22,7 @@ internal static class Extensions
         foreach (var attribute in context.Attributes)
         {
             if (
-                attribute.AttributeClass?.Name == GenerateDataReaderAttribute.Name
+                attribute.AttributeClass?.Name == nameof(GenerateDataReaderAttribute)
                 && attribute.AttributeClass?.ContainingNamespace.ToDisplayString()
                     == Constants.Namespace
             )
@@ -68,7 +68,7 @@ internal static class Extensions
                     prop.GetAttributes()
                         .Any(x =>
                             x.AttributeClass?.ContainingNamespace.Name == "Qread"
-                            && x.AttributeClass?.Name == IgnoreAttribute.Name
+                            && x.AttributeClass?.Name == nameof(IgnoreAttribute)
                         )
                 )
                     continue;

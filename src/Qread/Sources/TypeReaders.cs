@@ -30,7 +30,7 @@ internal static class TypeReaders
                 }
 
                 #endif
-                
+
                 """,
                 Encoding.UTF8
             )
@@ -56,7 +56,7 @@ internal static class TypeReaders
                 }
 
                 #endif
-                
+
                 """,
                 Encoding.UTF8
             )
@@ -82,7 +82,7 @@ internal static class TypeReaders
                     public static void AddReader<T>(TypeReader<T> reader) =>
                         _readers[typeof(T)] = reader;
 
-                    internal static bool TryGetReader<T>([NotNullWhen(true)] out TypeReader<T>? reader)
+                    public static bool TryGetReader<T>([NotNullWhen(true)] out TypeReader<T>? reader)
                     {
                         reader = null;
                         
@@ -95,7 +95,7 @@ internal static class TypeReaders
                 }
 
                 #endif
-                
+
                 """,
                 Encoding.UTF8
             )

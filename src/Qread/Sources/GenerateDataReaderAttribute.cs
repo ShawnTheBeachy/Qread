@@ -31,7 +31,7 @@ internal static class GenerateDataReaderAttribute
                 }
 
                 #endif
-                
+
                 """,
                 Encoding.UTF8
             )

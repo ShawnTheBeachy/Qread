@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Immutable;
 using System.IO;
@@ -40,7 +41,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 {(!target.IsExact ? "using System.Collections.Frozen;" : "")}
                 using System.Data;
                 {(target.Namespace is null ? "" : $"\nnamespace {target.Namespace};\n")}
-                
+
                 """
             );
             StartContainers(target.Type, indentWriter);

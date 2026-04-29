@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using NSubstitute;
 
 namespace Qread.Generated.Tests.Unit;
 
@@ -9,11 +8,11 @@ public sealed partial class CharTests
     public async Task NotNullableChar_ShouldBeSet()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.GetChar(1).Returns('M');
 
         // Act.
-        var sut = Initials.FromDataReader(dataReader);
+        var sut = Initials.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Mark).IsEqualTo('M');
@@ -23,11 +22,11 @@ public sealed partial class CharTests
     public async Task NullableChar_ShouldBeSetToNull_WhenColumnIsNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(0).Returns(true);
 
         // Act.
-        var sut = Initials.FromDataReader(dataReader);
+        var sut = Initials.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Dylan).IsNull();
@@ -37,12 +36,12 @@ public sealed partial class CharTests
     public async Task NullableChar_ShouldBeSetToValue_WhenColumnIsNotNull()
     {
         // Arrange.
-        var dataReader = Substitute.For<IDataReader>();
+        var dataReader = IDataReader.Imposter();
         dataReader.IsDBNull(0).Returns(false);
         dataReader.GetChar(0).Returns('D');
 
         // Act.
-        var sut = Initials.FromDataReader(dataReader);
+        var sut = Initials.FromDataReader(dataReader.Instance());
 
         // Assert.
         await Assert.That(sut.Dylan).IsEqualTo('D');
