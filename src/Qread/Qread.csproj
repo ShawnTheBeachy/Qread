@@ -61,32 +61,6 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- Pack the generator dll in the analyzers/dotnet/cs path -->
-    <None
-      Include="$(OutputPath)\$(AssemblyName).dll"
-      Pack="true"
-      PackagePath="analyzers/dotnet/cs"
-      Visible="false"
-    />
-
-    <!-- Pack the attributes dll in the analyzers/dotnet/cs path -->
-    <None
-      Include="$(OutputPath)\Qread.Attributes.dll"
-      Pack="true"
-      PackagePath="analyzers/dotnet/cs"
-      Visible="false"
-    />
-
-    <!-- Pack the attributes dll in the lib\netstandard2.0 path -->
-    <None
-      Include="$(OutputPath)\Qread.Attributes.dll"
-      Pack="true"
-      PackagePath="lib\netstandard2.0"
-      Visible="true"
-    />
-  </ItemGroup>
-
   <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">
     <Exec
       Command="dotnet tool restore"
