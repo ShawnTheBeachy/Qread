@@ -40,12 +40,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <None
-      Include="$(OutputPath)\$(AssemblyName).dll"
-      Pack="true"
-      PackagePath="analyzers/dotnet/cs"
-      Visible="false"
-    />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,8 +68,14 @@
       PackagePath="analyzers/dotnet/cs"
       Visible="false"
     />
-    <none
+    <None
       Include="$(OutputPath)\Qread.Attributes.dll"
+      Pack="true"
+      PackagePath="lib\netstandard2.0"
+      Visible="true"
+    />
+    <None
+      Include="$(OutputPath)\Qread.Attributes.xml"
       Pack="true"
       PackagePath="lib\netstandard2.0"
       Visible="true"
