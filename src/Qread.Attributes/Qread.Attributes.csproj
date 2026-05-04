@@ -8,6 +8,5 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
 </Project>
