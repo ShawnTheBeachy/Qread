@@ -40,12 +40,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <None
-      Include="$(OutputPath)\$(AssemblyName).dll"
-      Pack="true"
-      PackagePath="analyzers/dotnet/cs"
-      Visible="false"
-    />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +53,37 @@
       <Pack>true</Pack>
       <PackagePath>/assets/nuget-package-icon.png</PackagePath>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None
+      Include="$(OutputPath)\$(AssemblyName).dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
+    <None
+      Include="$(OutputPath)\Qread.Attributes.dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
+    <None
+      Include="$(OutputPath)\Qread.Attributes.dll"
+      Pack="true"
+      PackagePath="lib\netstandard2.0"
+      Visible="true"
+    />
+    <None
+      Include="$(OutputPath)\Qread.Attributes.xml"
+      Pack="true"
+      PackagePath="lib\netstandard2.0"
+      Visible="true"
+    />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Qread.Attributes\Qread.Attributes.csproj" />
   </ItemGroup>
 
   <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">
