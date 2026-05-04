@@ -3,6 +3,7 @@
     <Project Path="benchmarks/Qread.Benchmarks/Qread.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/Qread.Attributes/Qread.Attributes.csproj" />
     <Project Path="src/Qread/Qread.csproj" />
   </Folder>
   <Folder Name="/test/">

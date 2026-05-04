@@ -61,6 +61,31 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None
+      Include="$(OutputPath)\$(AssemblyName).dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
+    <None
+      Include="$(OutputPath)\Qread.Attributes.dll"
+      Pack="true"
+      PackagePath="analyzers/dotnet/cs"
+      Visible="false"
+    />
+    <none
+      Include="$(OutputPath)\Qread.Attributes.dll"
+      Pack="true"
+      PackagePath="lib\netstandard2.0"
+      Visible="true"
+    />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Qread.Attributes\Qread.Attributes.csproj" />
+  </ItemGroup>
+
   <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">
     <Exec
       Command="dotnet tool restore"

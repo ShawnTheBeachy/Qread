@@ -1,4 +1,3 @@
-using System;
 using System.CodeDom.Compiler;
 using System.Collections.Immutable;
 using System.IO;
@@ -227,7 +226,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 : $"!propIndices.TryGetValue($\"{{prefix}}{prop.Name}\", out var index{prop.Name}) ? null : ";
         var orNull = prop.IsNullable ? orNullCondition + $"reader.IsDBNull({index}) ? null : " : "";
         var tryReader =
-            $"global::{Constants.Namespace}.TypeReaders.TryGetReader<{prop.Type.FullNameIgnoreNullable}>(out var reader{prop.Name}) ? reader{prop.Name}.Read(reader, {index}) : ";
+            $"global::{Constants.Namespace}.TypeReaders.TryGetReader<{prop.Type.FullNameIgnoreNullable}>(out var reader{prop.Name}) && reader{prop.Name} is not null ? reader{prop.Name}.Read(reader, {index}) : ";
         var enumConversion = $"(global::{prop.Type.FullName})";
         return prop.Type.IsEnum
             ? $"{orNull}reader.GetDataTypeName({index}) == \"tinyint\" ? {enumConversion}reader.GetByte({index}) : "
@@ -273,7 +272,7 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
                 .AddIgnoreAttributeSource()
         );
         var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
-            $"{Constants.Namespace}.{GenerateDataReaderAttribute.Name}",
+            $"{Constants.Namespace}.{nameof(GenerateDataReaderAttribute)}",
             (node, _) =>
                 node
                     is ClassDeclarationSyntax
