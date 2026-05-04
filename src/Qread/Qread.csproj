@@ -83,7 +83,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qread.Attributes\Qread.Attributes.csproj" />
+    <ProjectReference Include="..\Qread.Attributes\Qread.Attributes.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">

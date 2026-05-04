@@ -13,7 +13,7 @@ partial record TestDto
         var instance = new global::TestNamespace.TestDto
         {
             Count = global::Qread.TypeReaders.TryGetReader<int>(out var readerCount) && readerCount is not null ? readerCount.Read(reader, 0) : reader.GetInt32(0),
-            Count2 = global::Qread.TypeReaders.TryGetReader<Int32>(out var readerCount2) && readerCount2 is not null ? readerCount2.Read(reader, 1) : reader.GetInt32(1)
+            Count2 = global::Qread.TypeReaders.TryGetReader<int>(out var readerCount2) && readerCount2 is not null ? readerCount2.Read(reader, 1) : reader.GetInt32(1)
         };
         return instance;
     }

@@ -13,7 +13,7 @@ partial record TestDto
         var instance = new global::TestNamespace.TestDto
         {
             IsDisabled = global::Qread.TypeReaders.TryGetReader<bool>(out var readerIsDisabled) && readerIsDisabled is not null ? readerIsDisabled.Read(reader, 0) : reader.GetBoolean(0),
-            IsDisabled2 = global::Qread.TypeReaders.TryGetReader<Boolean>(out var readerIsDisabled2) && readerIsDisabled2 is not null ? readerIsDisabled2.Read(reader, 1) : reader.GetBoolean(1)
+            IsDisabled2 = global::Qread.TypeReaders.TryGetReader<bool>(out var readerIsDisabled2) && readerIsDisabled2 is not null ? readerIsDisabled2.Read(reader, 1) : reader.GetBoolean(1)
         };
         return instance;
     }

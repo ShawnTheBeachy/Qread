@@ -11,10 +11,16 @@ internal static class DataReadersGeneratorHelper
     public static Task Verify(string source)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
+        var references = AppDomain
+            .CurrentDomain.GetAssemblies()
+            .Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location))
+            .Append(typeof(GenerateDataReaderAttribute).Assembly)
+            .Select(x => x.Location)
+            .Select(x => MetadataReference.CreateFromFile(x));
         var compilation = CSharpCompilation.Create(
-            assemblyName: "Tests",
+            assemblyName: typeof(DataReadersGeneratorTests).Assembly.FullName,
             syntaxTrees: [syntaxTree],
-            references: [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)]
+            references: references
         );
 
         var generator = new DataReadersGenerator();
@@ -26,16 +32,7 @@ internal static class DataReadersGeneratorHelper
 
         var verifySettings = new VerifySettings();
         verifySettings.UseDirectory("Verify/DataReadersGenerator");
-        return Verifier
-            .Verify(driver, verifySettings)
-            .IgnoreGeneratedResult(result =>
-                result.HintName
-                    is "GenerateDataReaderAttribute.g.cs"
-                        or "IgnoreAttribute.g.cs"
-                        or "ITypeReader.g.cs"
-                        or "TypeReader.g.cs"
-                        or "TypeReaders.g.cs"
-            );
+        return Verifier.Verify(driver, verifySettings);
     }
 
     private sealed class CustomConfigOptionsProvider : AnalyzerConfigOptionsProvider
