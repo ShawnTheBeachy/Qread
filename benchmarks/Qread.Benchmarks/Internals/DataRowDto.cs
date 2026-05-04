@@ -18,11 +18,6 @@ public sealed partial record DataRowDto
     public required string? StringProperty { get; init; }
     public required TimeSpan? TimeSpanProperty { get; init; }
 
-    public enum BenchmarkEnum
-    {
-        Default,
-    }
-
     public static IReadOnlyList<DataRowDto> Fake(int count) => Faker.Generate(count);
 
     private static readonly Faker<DataRowDto> Faker = new Faker<DataRowDto>()
