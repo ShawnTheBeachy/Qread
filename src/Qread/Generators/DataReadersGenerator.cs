@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Qread.Internals;
 using Qread.Models;
-using Qread.Sources;
 
 namespace Qread.Generators;
 
@@ -266,11 +265,6 @@ public sealed class DataReadersGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var typeCache = new TypeCache();
-        context.RegisterPostInitializationOutput(ctx =>
-            ctx.AddTypeReadersSource()
-                .AddGenerateDataReaderAttributeSource()
-                .AddIgnoreAttributeSource()
-        );
         var provider = context.SyntaxProvider.ForAttributeWithMetadataName(
             $"{Constants.Namespace}.{nameof(GenerateDataReaderAttribute)}",
             (node, _) =>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Qread.Models;
-using Qread.Sources;
 
 namespace Qread.Internals;
 
