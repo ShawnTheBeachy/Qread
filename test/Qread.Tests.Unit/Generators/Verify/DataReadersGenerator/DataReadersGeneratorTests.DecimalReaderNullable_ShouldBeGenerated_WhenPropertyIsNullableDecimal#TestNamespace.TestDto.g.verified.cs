@@ -13,7 +13,7 @@ partial record TestDto
         var instance = new global::TestNamespace.TestDto
         {
             Value = reader.IsDBNull(0) ? null : global::Qread.TypeReaders.TryGetReader<decimal>(out var readerValue) && readerValue is not null ? readerValue.Read(reader, 0) : reader.GetDecimal(0),
-            Value2 = reader.IsDBNull(1) ? null : global::Qread.TypeReaders.TryGetReader<Decimal>(out var readerValue2) && readerValue2 is not null ? readerValue2.Read(reader, 1) : reader.GetDecimal(1)
+            Value2 = reader.IsDBNull(1) ? null : global::Qread.TypeReaders.TryGetReader<decimal>(out var readerValue2) && readerValue2 is not null ? readerValue2.Read(reader, 1) : reader.GetDecimal(1)
         };
         return instance;
     }

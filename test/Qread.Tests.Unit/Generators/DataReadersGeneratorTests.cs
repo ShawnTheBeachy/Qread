@@ -12,6 +12,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -33,6 +34,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -54,6 +56,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -75,6 +78,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -96,6 +100,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -117,6 +122,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -138,6 +144,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -159,6 +166,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -180,6 +188,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -200,6 +209,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -220,6 +230,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -240,6 +251,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -260,6 +272,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -281,6 +294,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -302,6 +316,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -323,6 +338,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -344,6 +360,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -365,6 +382,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -386,6 +404,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -406,6 +425,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -426,6 +446,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -446,6 +467,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -466,6 +488,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -487,6 +510,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -508,6 +532,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -529,6 +554,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -550,6 +576,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -571,6 +598,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -609,6 +637,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -637,6 +666,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -657,6 +687,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -677,6 +708,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -697,6 +729,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -717,6 +750,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -737,6 +771,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -758,6 +793,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -778,6 +814,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -799,6 +836,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -819,6 +857,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -840,6 +879,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -861,6 +901,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -878,6 +919,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -898,6 +940,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -915,6 +958,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -932,6 +976,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -949,6 +994,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -969,6 +1015,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -1016,7 +1063,12 @@ public sealed class DataReadersGeneratorTests
         var compilation = CSharpCompilation.Create(
             typeof(DataReadersGeneratorTests).Assembly.FullName,
             [CSharpSyntaxTree.ParseText(dtoSourceText)],
-            [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)]
+            [
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(
+                    typeof(GenerateDataReaderAttribute).Assembly.Location
+                ),
+            ]
         );
 
         // Act.
@@ -1048,6 +1100,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 
@@ -1070,6 +1123,7 @@ public sealed class DataReadersGeneratorTests
         // Arrange.
         const string dtoSourceText = """
             using Qread;
+            using System;
 
             namespace TestNamespace;
 

@@ -15,6 +15,11 @@
 
   <ItemGroup>
     <ProjectReference
+      Include="..\..\src\Qread.Attributes\Qread.Attributes.csproj"
+      ReferenceOutputAssembly="true"
+      OutputItemType="Analyzer"
+    />
+    <ProjectReference
       Include="..\..\src\Qread\Qread.csproj"
       ReferenceOutputAssembly="false"
       OutputItemType="Analyzer"

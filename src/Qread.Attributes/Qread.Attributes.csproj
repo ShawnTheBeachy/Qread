@@ -4,6 +4,7 @@
     <LangVersion>latest</LangVersion>
     <RootNamespace>Qread</RootNamespace>
     <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <DebugType>embedded</DebugType>
